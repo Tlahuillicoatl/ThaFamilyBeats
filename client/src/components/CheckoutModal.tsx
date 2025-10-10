@@ -1,0 +1,113 @@
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CreditCard, Wallet } from "lucide-react";
+import { SiBitcoin } from "react-icons/si";
+import { useState } from "react";
+
+interface CheckoutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  service: string;
+  price: string;
+}
+
+export default function CheckoutModal({ isOpen, onClose, service, price }: CheckoutModalProps) {
+  const [paymentMethod, setPaymentMethod] = useState<string>("card");
+
+  const handleCheckout = () => {
+    console.log(`Processing ${paymentMethod} payment for ${service} - ${price}`);
+    onClose();
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-lg border-border">
+        <DialogHeader>
+          <DialogTitle className="font-display text-2xl">Complete Your Booking</DialogTitle>
+          <DialogDescription>
+            {service} - <span className="font-mono font-semibold">{price}</span>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-6 mt-4">
+          <div>
+            <Label className="text-sm uppercase tracking-wide text-muted-foreground mb-3 block">Payment Method</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant={paymentMethod === "card" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("card")}
+                className="flex items-center gap-2"
+                data-testid="button-payment-card"
+              >
+                <CreditCard className="h-4 w-4" />
+                Card
+              </Button>
+              <Button
+                variant={paymentMethod === "crypto" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("crypto")}
+                className="flex items-center gap-2"
+                data-testid="button-payment-crypto"
+              >
+                <SiBitcoin className="h-4 w-4" />
+                Crypto
+              </Button>
+              <Button
+                variant={paymentMethod === "zelle" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("zelle")}
+                className="flex items-center gap-2"
+                data-testid="button-payment-zelle"
+              >
+                <Wallet className="h-4 w-4" />
+                Zelle
+              </Button>
+              <Button
+                variant={paymentMethod === "cashapp" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("cashapp")}
+                className="flex items-center gap-2"
+                data-testid="button-payment-cashapp"
+              >
+                <Wallet className="h-4 w-4" />
+                Cash App
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" placeholder="John Doe" className="mt-1.5" data-testid="input-name" />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" placeholder="john@example.com" className="mt-1.5" data-testid="input-email" />
+            </div>
+            {paymentMethod === "card" && (
+              <>
+                <div>
+                  <Label htmlFor="card">Card Number</Label>
+                  <Input id="card" placeholder="4242 4242 4242 4242" className="mt-1.5" data-testid="input-card" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="expiry">Expiry</Label>
+                    <Input id="expiry" placeholder="MM/YY" className="mt-1.5" data-testid="input-expiry" />
+                  </div>
+                  <div>
+                    <Label htmlFor="cvc">CVC</Label>
+                    <Input id="cvc" placeholder="123" className="mt-1.5" data-testid="input-cvc" />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <Button onClick={handleCheckout} className="w-full" size="lg" data-testid="button-complete-payment">
+            Complete Payment
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
