@@ -17,10 +17,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
         <div className="relative z-10 text-center max-w-5xl mx-auto px-4">
-          <img src={logoPath} alt="ThaFamilyBeats" className="w-64 md:w-96 mx-auto mb-8" />
+          <img src={logoPath} alt="ThaFamilyBeats" className="w-64 md:w-96 mx-auto mb-12" />
           <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">
             Where Sound Meets <span className="text-ring">Excellence</span>
           </h1>
