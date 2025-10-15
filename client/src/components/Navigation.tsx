@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logoPath from "@assets/TFB HD_1760135611354.png";
+import logoPath from "@assets/Untitled Project_1760566680142.png";
 
 export default function Navigation() {
   const [location] = useLocation();
