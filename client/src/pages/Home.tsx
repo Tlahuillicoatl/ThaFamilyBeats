@@ -51,27 +51,27 @@ export default function Home() {
               icon={Mic}
               title="Studio Recording"
               description="Premium recording sessions with professional equipment"
-              price="$150/hr"
+              price="$75/hr"
               features={[
                 "State-of-the-art equipment",
                 "Professional sound engineer",
                 "Real-time monitoring",
                 "High-quality audio export"
               ]}
-              onBook={() => openCheckout("Studio Recording Session", "$150/hr")}
+              onBook={() => openCheckout("Studio Recording Session", "$75/hr")}
             />
             <ServiceCard
               icon={Headphones}
-              title="Mixing & Mastering"
-              description="Professional mixing and mastering services"
-              price="$200"
+              title="Mixing Services"
+              description="Professional mixing services"
+              price="$350"
               features={[
                 "Professional mixing",
-                "Radio-ready mastering",
                 "Unlimited revisions",
-                "Fast turnaround"
+                "Fast turnaround",
+                "High-quality stereo mix"
               ]}
-              onBook={() => openCheckout("Mixing & Mastering", "$200")}
+              onBook={() => openCheckout("Mixing Service", "$350")}
             />
             <ServiceCard
               icon={Music}

@@ -11,47 +11,49 @@ export default function ThaFamilyMixes() {
   const packages = [
     {
       id: 1,
-      name: "Basic Mix",
-      price: "$150",
+      name: "Mixing",
+      price: "$350",
       icon: Headphones,
+      popular: true,
       features: [
         "Professional mixing",
-        "2 revisions included",
-        "Stereo master file",
-        "5-day turnaround",
+        "Unlimited revisions",
+        "Stereo mix file",
+        "Fast turnaround",
       ],
     },
     {
       id: 2,
-      name: "Pro Mix & Master",
-      price: "$250",
+      name: "Mastering",
+      price: "Contact for pricing",
       icon: Sparkles,
-      popular: true,
       features: [
-        "Professional mixing",
-        "Radio-ready mastering",
-        "5 revisions included",
-        "Stereo + instrumental files",
-        "3-day turnaround",
+        "Professional mastering",
+        "Radio-ready quality",
+        "Multiple format delivery",
+        "Industry standard loudness",
       ],
     },
     {
       id: 3,
-      name: "Premium Package",
-      price: "$400",
+      name: "Mix + Master Bundle",
+      price: "Contact for pricing",
       icon: Zap,
       features: [
-        "Professional mixing",
-        "Mastering for all platforms",
+        "Complete professional mixing",
+        "Professional mastering",
         "Unlimited revisions",
         "All file formats",
-        "24-hour turnaround",
-        "Dolby Atmos mix included",
+        "Priority turnaround",
       ],
     },
   ];
 
   const handleBooking = (pkg: { name: string; price: string }) => {
+    if (pkg.price === "Contact for pricing") {
+      window.location.href = "/contact";
+      return;
+    }
     setSelectedPackage(pkg);
     setCheckoutOpen(true);
   };
@@ -102,7 +104,7 @@ export default function ThaFamilyMixes() {
                   variant={pkg.popular ? "default" : "outline"}
                   data-testid={`button-book-${pkg.id}`}
                 >
-                  Get Started
+                  {pkg.price === "Contact for pricing" ? "Contact Us" : "Book Now"}
                 </Button>
               </CardFooter>
             </Card>

@@ -1,44 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
-import { Clock, Mic2, Users } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import CheckoutModal from "@/components/CheckoutModal";
 
 export default function StudioBooking() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [selectedPackage, setSelectedPackage] = useState<{ name: string; price: string } | null>(null);
+  const [hours, setHours] = useState(2);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
-  const packages = [
-    {
-      id: 1,
-      name: "2-Hour Session",
-      price: "$150",
-      duration: "2 hours",
-      description: "Perfect for singles and quick recordings",
-      icon: Clock,
-    },
-    {
-      id: 2,
-      name: "4-Hour Session",
-      price: "$280",
-      duration: "4 hours",
-      description: "Ideal for EPs and multiple tracks",
-      icon: Mic2,
-    },
-    {
-      id: 3,
-      name: "Full Day Session",
-      price: "$500",
-      duration: "8 hours",
-      description: "Complete album recording experience",
-      icon: Users,
-    },
-  ];
+  const pricePerHour = 75;
+  const totalPrice = hours * pricePerHour;
 
-  const handleBooking = (pkg: { name: string; price: string }) => {
-    setSelectedPackage(pkg);
+  const handleHoursChange = (change: number) => {
+    const newHours = hours + change;
+    if (newHours >= 1 && newHours <= 12) {
+      setHours(newHours);
+    }
+  };
+
+  const handleBooking = () => {
     setCheckoutOpen(true);
   };
 
@@ -52,26 +35,58 @@ export default function StudioBooking() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {packages.map((pkg) => (
-            <Card key={pkg.id} className="hover-elevate transition-all cursor-pointer" onClick={() => handleBooking({ name: pkg.name, price: pkg.price })}>
-              <CardHeader>
-                <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center mb-4">
-                  <pkg.icon className="h-6 w-6 text-primary" />
+        <Card className="max-w-2xl mx-auto mb-12">
+          <CardHeader>
+            <CardTitle className="font-display text-2xl">Select Your Hours</CardTitle>
+            <CardDescription>Choose how many studio hours you need (1-12 hours at ${pricePerHour}/hour)</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <Label className="text-sm uppercase tracking-wide text-muted-foreground mb-3 block">Number of Hours</Label>
+              <div className="flex items-center justify-center gap-6">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleHoursChange(-1)}
+                  disabled={hours <= 1}
+                  data-testid="button-decrease-hours"
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <div className="text-center min-w-[120px]">
+                  <div className="text-5xl font-display font-bold" data-testid="text-hours">{hours}</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {hours === 1 ? 'hour' : 'hours'}
+                  </div>
                 </div>
-                <CardTitle className="font-display">{pkg.name}</CardTitle>
-                <CardDescription>{pkg.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <span className="text-3xl font-mono font-bold">{pkg.price}</span>
-                  <span className="text-muted-foreground ml-2">/ {pkg.duration}</span>
-                </div>
-                <Button className="w-full" data-testid={`button-book-${pkg.id}`}>Book Now</Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleHoursChange(1)}
+                  disabled={hours >= 12}
+                  data-testid="button-increase-hours"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="bg-card border border-card-border rounded-md p-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-muted-foreground">Price per hour</span>
+                <span className="font-mono">${pricePerHour}</span>
+              </div>
+              <div className="flex justify-between items-center text-xl font-bold">
+                <span className="font-display">Total Price</span>
+                <span className="font-mono" data-testid="text-total-price">${totalPrice}</span>
+              </div>
+            </div>
+
+            <Button onClick={handleBooking} className="w-full" size="lg" data-testid="button-book-session">
+              Book {hours} {hours === 1 ? 'Hour' : 'Hours'} for ${totalPrice}
+            </Button>
+          </CardContent>
+        </Card>
 
         <Card className="max-w-3xl mx-auto">
           <CardHeader>
@@ -118,14 +133,12 @@ export default function StudioBooking() {
         </div>
       </div>
 
-      {selectedPackage && (
-        <CheckoutModal
-          isOpen={checkoutOpen}
-          onClose={() => setCheckoutOpen(false)}
-          service={selectedPackage.name}
-          price={selectedPackage.price}
-        />
-      )}
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        service={`Studio Session - ${hours} ${hours === 1 ? 'Hour' : 'Hours'}`}
+        price={`$${totalPrice}`}
+      />
     </div>
   );
 }
