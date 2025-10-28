@@ -96,24 +96,58 @@ export default function Home() {
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             Check out some of our recent mixes and productions
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Video 1 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border hover-elevate transition-all">
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <p className="text-sm">Embed your video here</p>
-              </div>
+            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/rE9s-SeNrFg"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                data-testid="video-1"
+              ></iframe>
             </div>
             {/* Video 2 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border hover-elevate transition-all">
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <p className="text-sm">Embed your video here</p>
-              </div>
+            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/2muNDKXH1EY"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                data-testid="video-2"
+              ></iframe>
             </div>
             {/* Video 3 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border hover-elevate transition-all">
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <p className="text-sm">Embed your video here</p>
-              </div>
+            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/Lpu50TEFltM"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                data-testid="video-3"
+              ></iframe>
+            </div>
+            {/* Video 4 */}
+            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/VadgJv6oync"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                data-testid="video-4"
+              ></iframe>
             </div>
           </div>
         </div>
