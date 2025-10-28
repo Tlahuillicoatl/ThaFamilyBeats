@@ -33,10 +33,10 @@ export default function Footer() {
           <div>
             <h4 className="font-display text-sm font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-instagram">
+              <a href="https://www.instagram.com/thafamilybeats/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-instagram">
                 <SiInstagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-youtube">
+              <a href="https://www.youtube.com/@thafamilybeats" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-youtube">
                 <SiYoutube className="h-5 w-5" />
               </a>
             </div>
