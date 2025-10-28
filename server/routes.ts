@@ -4,17 +4,49 @@ import { storage } from "./storage";
 import { insertTransactionSchema } from "@shared/schema";
 import "./types";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+if (!process.env.ADMIN_PASSWORD) {
+  throw new Error("ADMIN_PASSWORD environment variable must be set for security");
+}
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const loginAttempts = new Map<string, { count: number; lastAttempt: number }>();
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication routes
   app.post("/api/admin/login", async (req, res) => {
+    const clientIp = req.ip || "unknown";
     const { password } = req.body;
+    
+    const attemptData = loginAttempts.get(clientIp);
+    const now = Date.now();
+
+    if (attemptData) {
+      if (attemptData.count >= MAX_LOGIN_ATTEMPTS) {
+        const timeSinceLastAttempt = now - attemptData.lastAttempt;
+        if (timeSinceLastAttempt < LOCKOUT_DURATION) {
+          const remainingTime = Math.ceil((LOCKOUT_DURATION - timeSinceLastAttempt) / 1000 / 60);
+          return res.status(429).json({ 
+            success: false, 
+            message: `Too many login attempts. Please try again in ${remainingTime} minutes.` 
+          });
+        } else {
+          loginAttempts.delete(clientIp);
+        }
+      }
+    }
     
     if (password === ADMIN_PASSWORD) {
       req.session.isAdmin = true;
+      loginAttempts.delete(clientIp);
       res.json({ success: true });
     } else {
+      const attempts = attemptData || { count: 0, lastAttempt: now };
+      attempts.count += 1;
+      attempts.lastAttempt = now;
+      loginAttempts.set(clientIp, attempts);
+      
       res.status(401).json({ success: false, message: "Invalid password" });
     }
   });

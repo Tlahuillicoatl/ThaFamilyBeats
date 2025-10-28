@@ -6,6 +6,7 @@ import { CreditCard, Wallet, Copy, CheckCircle } from "lucide-react";
 import { SiBitcoin, SiPaypal } from "react-icons/si";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -17,6 +18,9 @@ interface CheckoutModalProps {
 export default function CheckoutModal({ isOpen, onClose, service, price }: CheckoutModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
   const [copied, setCopied] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const paymentInfo = {
@@ -36,17 +40,57 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleCheckout = () => {
-    console.log(`Processing ${paymentMethod} payment for ${service} - ${price}`);
-    
-    if (paymentMethod !== "card") {
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!customerName || !customerEmail) {
       toast({
-        title: "Payment Instructions Sent",
-        description: "Please complete the payment and we'll confirm your booking shortly.",
+        title: "Missing Information",
+        description: "Please fill in your name and email",
+        variant: "destructive",
       });
+      return;
     }
-    
-    onClose();
+
+    setIsSubmitting(true);
+
+    try {
+      const priceNumber = parseFloat(price.replace(/[^0-9.]/g, ''));
+      const amountInCents = Math.round(priceNumber * 100);
+
+      await apiRequest("POST", "/api/transactions", {
+        customerName,
+        customerEmail,
+        service,
+        amount: amountInCents,
+        paymentMethod: paymentMethod as "card" | "paypal" | "cashapp" | "zelle" | "crypto",
+        status: "pending",
+      });
+
+      if (paymentMethod === "card") {
+        toast({
+          title: "Payment Submitted",
+          description: "Your booking is being processed.",
+        });
+      } else {
+        toast({
+          title: "Payment Instructions Sent",
+          description: "Please complete the payment and we'll confirm your booking shortly.",
+        });
+      }
+
+      setCustomerName("");
+      setCustomerEmail("");
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process booking",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -111,14 +155,31 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
             </div>
           </div>
 
-          <div className="space-y-4">
+          <form onSubmit={handleCheckout} className="space-y-4">
             <div>
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" placeholder="John Doe" className="mt-1.5" data-testid="input-name" />
+              <Input 
+                id="name" 
+                placeholder="John Doe" 
+                className="mt-1.5" 
+                data-testid="input-name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                required
+              />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="john@example.com" className="mt-1.5" data-testid="input-email" />
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="john@example.com" 
+                className="mt-1.5" 
+                data-testid="input-email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                required
+              />
             </div>
 
             {paymentMethod === "card" && (
@@ -211,11 +272,11 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
                 <p className="text-xs text-muted-foreground">After sending, we'll confirm your booking via email.</p>
               </div>
             )}
-          </div>
 
-          <Button onClick={handleCheckout} className="w-full" size="lg" data-testid="button-complete-payment">
-            Complete Payment
-          </Button>
+            <Button type="submit" className="w-full" size="lg" data-testid="button-complete-payment" disabled={isSubmitting}>
+              {isSubmitting ? "Processing..." : "Complete Payment"}
+            </Button>
+          </form>
         </div>
       </DialogContent>
     </Dialog>
