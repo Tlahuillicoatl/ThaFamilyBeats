@@ -2,9 +2,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CreditCard, Wallet } from "lucide-react";
-import { SiBitcoin } from "react-icons/si";
+import { CreditCard, Wallet, Copy, CheckCircle } from "lucide-react";
+import { SiBitcoin, SiPaypal } from "react-icons/si";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -15,9 +16,36 @@ interface CheckoutModalProps {
 
 export default function CheckoutModal({ isOpen, onClose, service, price }: CheckoutModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
+  const [copied, setCopied] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const paymentInfo = {
+    cashapp: "$J11onthebeat",
+    zelle: "tfb@thafamilybeats.com",
+    crypto: "Your Bitcoin Wallet Address", // You'll need to provide this
+    paypal: "tfb@thafamilybeats.com"
+  };
+
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(type);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard`,
+    });
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   const handleCheckout = () => {
     console.log(`Processing ${paymentMethod} payment for ${service} - ${price}`);
+    
+    if (paymentMethod !== "card") {
+      toast({
+        title: "Payment Instructions Sent",
+        description: "Please complete the payment and we'll confirm your booking shortly.",
+      });
+    }
+    
     onClose();
   };
 
@@ -45,13 +73,22 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
                 Card
               </Button>
               <Button
-                variant={paymentMethod === "crypto" ? "default" : "outline"}
-                onClick={() => setPaymentMethod("crypto")}
+                variant={paymentMethod === "paypal" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("paypal")}
                 className="flex items-center gap-2"
-                data-testid="button-payment-crypto"
+                data-testid="button-payment-paypal"
               >
-                <SiBitcoin className="h-4 w-4" />
-                Crypto
+                <SiPaypal className="h-4 w-4" />
+                PayPal
+              </Button>
+              <Button
+                variant={paymentMethod === "cashapp" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("cashapp")}
+                className="flex items-center gap-2"
+                data-testid="button-payment-cashapp"
+              >
+                <Wallet className="h-4 w-4" />
+                Cash App
               </Button>
               <Button
                 variant={paymentMethod === "zelle" ? "default" : "outline"}
@@ -63,13 +100,13 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
                 Zelle
               </Button>
               <Button
-                variant={paymentMethod === "cashapp" ? "default" : "outline"}
-                onClick={() => setPaymentMethod("cashapp")}
+                variant={paymentMethod === "crypto" ? "default" : "outline"}
+                onClick={() => setPaymentMethod("crypto")}
                 className="flex items-center gap-2"
-                data-testid="button-payment-cashapp"
+                data-testid="button-payment-crypto"
               >
-                <Wallet className="h-4 w-4" />
-                Cash App
+                <SiBitcoin className="h-4 w-4" />
+                Bitcoin
               </Button>
             </div>
           </div>
@@ -83,6 +120,7 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="john@example.com" className="mt-1.5" data-testid="input-email" />
             </div>
+
             {paymentMethod === "card" && (
               <>
                 <div>
@@ -100,6 +138,78 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
                   </div>
                 </div>
               </>
+            )}
+
+            {paymentMethod === "cashapp" && (
+              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+                <p className="text-sm text-muted-foreground">Send payment to:</p>
+                <div className="flex items-center justify-between bg-background p-3 rounded border">
+                  <span className="font-mono text-lg font-semibold">{paymentInfo.cashapp}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copyToClipboard(paymentInfo.cashapp, "CashApp")}
+                    data-testid="button-copy-cashapp"
+                  >
+                    {copied === "CashApp" ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">After sending, we'll confirm your booking via email.</p>
+              </div>
+            )}
+
+            {paymentMethod === "paypal" && (
+              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+                <p className="text-sm text-muted-foreground">Send payment to:</p>
+                <div className="flex items-center justify-between bg-background p-3 rounded border">
+                  <span className="font-mono">{paymentInfo.paypal}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copyToClipboard(paymentInfo.paypal, "PayPal")}
+                    data-testid="button-copy-paypal"
+                  >
+                    {copied === "PayPal" ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">After sending, we'll confirm your booking via email.</p>
+              </div>
+            )}
+
+            {paymentMethod === "zelle" && (
+              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+                <p className="text-sm text-muted-foreground">Send payment via Zelle to:</p>
+                <div className="flex items-center justify-between bg-background p-3 rounded border">
+                  <span className="font-mono">{paymentInfo.zelle}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copyToClipboard(paymentInfo.zelle, "Zelle")}
+                    data-testid="button-copy-zelle"
+                  >
+                    {copied === "Zelle" ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">After sending, we'll confirm your booking via email.</p>
+              </div>
+            )}
+
+            {paymentMethod === "crypto" && (
+              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+                <p className="text-sm text-muted-foreground">Send Bitcoin to:</p>
+                <div className="flex items-center justify-between bg-background p-3 rounded border">
+                  <span className="font-mono text-xs break-all">{paymentInfo.crypto}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copyToClipboard(paymentInfo.crypto, "Bitcoin Address")}
+                    data-testid="button-copy-crypto"
+                  >
+                    {copied === "Bitcoin Address" ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">After sending, we'll confirm your booking via email.</p>
+              </div>
             )}
           </div>
 
