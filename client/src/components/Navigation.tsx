@@ -11,7 +11,7 @@ export default function Navigation() {
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/studio-booking", label: "Studio Booking" },
-    { path: "/thafamilymixes", label: "ThaFamilyMixes" },
+    { path: "/thafamilymixes", label: "TFB Mixes" },
     { path: "/sync-licensing", label: "Sync Licensing" },
     { path: "/about", label: "About Us" },
     { path: "/contact", label: "Contact" },
