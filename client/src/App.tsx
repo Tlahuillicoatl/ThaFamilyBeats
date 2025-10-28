@@ -10,18 +10,30 @@ import ThaFamilyMixes from "@/pages/ThaFamilyMixes";
 import SyncLicensing from "@/pages/SyncLicensing";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import Admin from "@/pages/Admin";
+import AdminLogin from "@/pages/AdminLogin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/studio-booking" component={StudioBooking} />
-      <Route path="/thafamilymixes" component={ThaFamilyMixes} />
-      <Route path="/sync-licensing" component={SyncLicensing} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      <Route component={NotFound} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin">
+        <Admin />
+      </Route>
+      <Route path="/">
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/studio-booking" component={StudioBooking} />
+            <Route path="/thafamilymixes" component={ThaFamilyMixes} />
+            <Route path="/sync-licensing" component={SyncLicensing} />
+            <Route path="/about" component={About} />
+            <Route path="/contact" component={Contact} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
     </Switch>
   );
 }
