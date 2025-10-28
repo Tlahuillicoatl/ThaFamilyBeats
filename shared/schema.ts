@@ -38,3 +38,21 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({
 
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 export type Transaction = typeof transactions.$inferSelect;
+
+export const beats = pgTable("beats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  genre: text("genre").notNull(),
+  bpm: integer("bpm").notNull(),
+  price: integer("price").notNull(),
+  audioPath: text("audio_path").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertBeatSchema = createInsertSchema(beats).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertBeat = z.infer<typeof insertBeatSchema>;
+export type Beat = typeof beats.$inferSelect;

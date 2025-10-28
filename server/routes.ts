@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTransactionSchema } from "@shared/schema";
+import { insertTransactionSchema, insertBeatSchema } from "@shared/schema";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import "./types";
 
 if (!process.env.ADMIN_PASSWORD) {
@@ -79,6 +80,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const transactions = await storage.getAllTransactions();
       res.json(transactions);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Object storage routes - Reference: blueprint:javascript_object_storage
+  app.get("/objects/:objectPath(*)", async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const objectFile = await objectStorageService.getObjectEntityFile(
+        req.path,
+      );
+      objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error checking object access:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  app.post("/api/objects/upload", async (req, res) => {
+    if (!req.session.isAdmin) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Beats routes
+  app.post("/api/beats", async (req, res) => {
+    if (!req.session.isAdmin) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const validatedData = insertBeatSchema.parse(req.body);
+      
+      const objectStorageService = new ObjectStorageService();
+      const audioPath = objectStorageService.normalizeObjectEntityPath(
+        validatedData.audioPath,
+      );
+      
+      const beat = await storage.createBeat({
+        ...validatedData,
+        audioPath,
+      });
+      res.json(beat);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/beats", async (req, res) => {
+    try {
+      const beats = await storage.getAllBeats();
+      res.json(beats);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/beats/:id", async (req, res) => {
+    if (!req.session.isAdmin) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      await storage.deleteBeat(req.params.id);
+      res.json({ success: true });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

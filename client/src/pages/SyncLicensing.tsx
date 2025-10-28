@@ -4,22 +4,41 @@ import { Input } from "@/components/ui/input";
 import { Play, Search } from "lucide-react";
 import { useState } from "react";
 import CheckoutModal from "@/components/CheckoutModal";
+import { useQuery } from "@tanstack/react-query";
+
+type Beat = {
+  id: string;
+  title: string;
+  genre: string;
+  bpm: number;
+  price: number;
+  audioPath: string;
+  createdAt: string;
+};
 
 export default function SyncLicensing() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [selectedBeat, setSelectedBeat] = useState({ name: "", price: "" });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const beats = [
-    { id: 1, title: "Night Vibes", genre: "Hip Hop", bpm: 140, price: "$50" },
-    { id: 2, title: "Sunset Dreams", genre: "R&B", bpm: 85, price: "$75" },
-    { id: 3, title: "City Lights", genre: "Trap", bpm: 145, price: "$60" },
-    { id: 4, title: "Paradise", genre: "Afrobeat", bpm: 120, price: "$70" },
-    { id: 5, title: "Dark Matter", genre: "Drill", bpm: 150, price: "$80" },
-    { id: 6, title: "Golden Hour", genre: "Pop", bpm: 95, price: "$65" },
-  ];
+  const { data: beats, isLoading } = useQuery<Beat[]>({
+    queryKey: ["/api/beats"],
+  });
 
-  const handleLicense = (beat: { title: string; price: string }) => {
-    setSelectedBeat({ name: `Beat License - ${beat.title}`, price: beat.price });
+  const filteredBeats = beats?.filter((beat) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      beat.title.toLowerCase().includes(query) ||
+      beat.genre.toLowerCase().includes(query) ||
+      beat.bpm.toString().includes(query)
+    );
+  }) || [];
+
+  const handleLicense = (beat: { title: string; price: number }) => {
+    setSelectedBeat({ 
+      name: `Beat License - ${beat.title}`, 
+      price: `$${(beat.price / 100).toFixed(0)}` 
+    });
     setCheckoutOpen(true);
   };
 
@@ -39,13 +58,20 @@ export default function SyncLicensing() {
             <Input
               placeholder="Search beats by title, genre, or BPM..."
               className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="input-search-beats"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {beats.map((beat) => (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
+          </div>
+        ) : filteredBeats.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredBeats.map((beat) => (
             <Card key={beat.id} className="hover-elevate transition-all">
               <CardHeader>
                 <CardTitle className="font-display flex items-center justify-between">
@@ -61,7 +87,9 @@ export default function SyncLicensing() {
                   <span>•</span>
                   <span>{beat.bpm} BPM</span>
                 </div>
-                <div className="text-2xl font-mono font-bold">{beat.price}</div>
+                <div className="text-2xl font-mono font-bold">
+                  ${(beat.price / 100).toFixed(0)}
+                </div>
               </CardContent>
               <CardFooter>
                 <Button
@@ -73,8 +101,15 @@ export default function SyncLicensing() {
                 </Button>
               </CardFooter>
             </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <p className="text-muted-foreground text-lg">
+              {searchQuery ? "No beats found matching your search." : "No beats available yet. Check back soon!"}
+            </p>
+          </div>
+        )}
 
         <div className="mt-16 max-w-4xl mx-auto">
           <Card>
