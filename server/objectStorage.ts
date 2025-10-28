@@ -175,9 +175,18 @@ export class ObjectStorageService {
     }
   
     const url = new URL(rawPath);
-    const rawObjectPath = url.pathname;
+    let rawObjectPath = url.pathname;
+    
+    // Ensure rawObjectPath starts with /
+    if (!rawObjectPath.startsWith("/")) {
+      rawObjectPath = `/${rawObjectPath}`;
+    }
   
     let objectEntityDir = this.getPrivateObjectDir();
+    // Ensure objectEntityDir starts with /
+    if (!objectEntityDir.startsWith("/")) {
+      objectEntityDir = `/${objectEntityDir}`;
+    }
     if (!objectEntityDir.endsWith("/")) {
       objectEntityDir = `${objectEntityDir}/`;
     }

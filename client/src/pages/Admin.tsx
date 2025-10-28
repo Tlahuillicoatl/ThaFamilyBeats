@@ -176,12 +176,21 @@ export default function Admin() {
     });
   };
 
+  const [objectPathMap, setObjectPathMap] = useState<Record<string, string>>({});
+
   const handleGetUploadParameters = async () => {
     const response = await fetch("/api/objects/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
+    
+    // Store the mapping from uploadURL to objectPath
+    setObjectPathMap(prev => ({
+      ...prev,
+      [data.uploadURL]: data.objectPath
+    }));
+    
     return {
       method: "PUT" as const,
       url: data.uploadURL,
@@ -191,7 +200,12 @@ export default function Admin() {
   const handleUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful.length > 0) {
       const uploadedFile = result.successful[0];
-      setUploadedAudioURL(uploadedFile.uploadURL || "");
+      const uploadURL = uploadedFile.uploadURL || "";
+      
+      // Use the objectPath from our mapping
+      const objectPath = objectPathMap[uploadURL] || uploadURL;
+      setUploadedAudioURL(objectPath);
+      
       toast({
         title: "Upload Successful",
         description: "Audio file uploaded. Now add beat details.",

@@ -110,7 +110,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const objectStorageService = new ObjectStorageService();
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-      res.json({ uploadURL });
+      
+      // Extract the object path from the upload URL for later use
+      const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+      
+      res.json({ uploadURL, objectPath });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -126,8 +130,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertBeatSchema.parse(req.body);
       
       const objectStorageService = new ObjectStorageService();
-      const audioPath = objectStorageService.normalizeObjectEntityPath(
+      
+      // Normalize path and set public ACL policy
+      const audioPath = await objectStorageService.trySetObjectEntityAclPolicy(
         validatedData.audioPath,
+        {
+          owner: "admin",
+          visibility: "public",
+        }
       );
       
       const beat = await storage.createBeat({

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Play, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import CheckoutModal from "@/components/CheckoutModal";
 import { useQuery } from "@tanstack/react-query";
@@ -74,15 +74,18 @@ export default function SyncLicensing() {
             {filteredBeats.map((beat) => (
             <Card key={beat.id} className="hover-elevate transition-all">
               <CardHeader>
-                <CardTitle className="font-display flex items-center justify-between">
-                  {beat.title}
-                  <Button size="icon" variant="ghost" className="rounded-full" data-testid={`button-play-${beat.id}`}>
-                    <Play className="h-4 w-4" />
-                  </Button>
-                </CardTitle>
+                <CardTitle className="font-display">{beat.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="flex gap-4 text-sm text-muted-foreground mb-4">
+              <CardContent className="space-y-4">
+                <audio 
+                  controls 
+                  className="w-full"
+                  data-testid={`audio-player-${beat.id}`}
+                >
+                  <source src={beat.audioPath} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+                <div className="flex gap-4 text-sm text-muted-foreground">
                   <span>{beat.genre}</span>
                   <span>•</span>
                   <span>{beat.bpm} BPM</span>
