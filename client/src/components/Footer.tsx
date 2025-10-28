@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { SiInstagram, SiX, SiYoutube, SiFacebook } from "react-icons/si";
+import { SiInstagram, SiYoutube } from "react-icons/si";
 
 export default function Footer() {
   return (
@@ -36,14 +36,8 @@ export default function Footer() {
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-instagram">
                 <SiInstagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-twitter">
-                <SiX className="h-5 w-5" />
-              </a>
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-youtube">
                 <SiYoutube className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-facebook">
-                <SiFacebook className="h-5 w-5" />
               </a>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { useState } from "react";
 
 export default function Contact() {
@@ -118,7 +118,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">info@thafamilybeats.com</p>
+                    <p className="text-muted-foreground">tfb@thafamilybeats.com</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -127,16 +127,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-semibold mb-1">Location</h3>
-                    <p className="text-muted-foreground">123 Music Street<br />Studio City, CA 91604</p>
+                    <p className="text-muted-foreground">+1 (213) 418-4295</p>
                   </div>
                 </div>
               </CardContent>
