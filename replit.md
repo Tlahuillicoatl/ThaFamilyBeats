@@ -34,10 +34,18 @@ Preferred communication style: Simple, everyday language.
 
 **Design System:**
 - Dark-first design approach with high-contrast chrome aesthetic
+- Transparent TFB logo used as favicon and main branding (TransparentTFB_1761962201894.png)
+- Future enhancement: Studio background banner behind logo on home page
 - Custom color palette defined via HSL CSS variables (background: 0 0% 8%, foreground: 0 0% 98%)
 - Typography: Display font (Rajdhani), body font (Inter), monospace (JetBrains Mono)
 - Hover states using elevation overlays (--elevate-1, --elevate-2)
 - Consistent border radius (lg: 9px, md: 6px, sm: 3px)
+
+**Branding:**
+- Lead Engineer: 8:11 (30+ years experience)
+- Producer/Engineer/Artist: Angelo Knight
+- CashApp: $811onthebeat
+- Contact: tfb@thafamilybeats.com, +1 (213) 418-4295
 
 **State Management:**
 - React Query for async data fetching and caching
