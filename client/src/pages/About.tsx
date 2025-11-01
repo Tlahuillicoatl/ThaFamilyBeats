@@ -73,35 +73,45 @@ export default function About() {
               <CardTitle className="font-display text-2xl">Meet The Team</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-display text-xl font-bold mb-2">J11</h3>
-                  <p className="text-sm text-muted-foreground mb-3">Lead Engineer & Producer</p>
+              <div className="flex flex-col md:flex-row gap-6 items-start">
+                <div className="w-32 h-32 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                  <span className="text-4xl text-muted-foreground">8:11</span>
                 </div>
-                <p className="text-muted-foreground">
-                  With over 30 years in the music industry, J11 is a seasoned engineer and producer from Los Angeles 
-                  who has seen and shaped the evolution of modern music production. His three decades of experience 
-                  bring invaluable wisdom and technical expertise to every project at ThaFamilyBeats. Having worked 
-                  through multiple eras of recording technology and music trends, J11 brings a deep understanding of 
-                  what makes great music timeless. His mentorship and industry knowledge provide the foundation that 
-                  makes ThaFamilyBeats a trusted name in the LA music scene.
-                </p>
+                <div className="space-y-4 flex-1">
+                  <div>
+                    <h3 className="font-display text-xl font-bold mb-2">8:11</h3>
+                    <p className="text-sm text-muted-foreground mb-3">Lead Engineer & Producer</p>
+                  </div>
+                  <p className="text-muted-foreground">
+                    With over 30 years in the music industry, 8:11 is a seasoned engineer and producer from Los Angeles 
+                    who has seen and shaped the evolution of modern music production. His three decades of experience 
+                    bring invaluable wisdom and technical expertise to every project at ThaFamilyBeats. Having worked 
+                    through multiple eras of recording technology and music trends, 8:11 brings a deep understanding of 
+                    what makes great music timeless. His mentorship and industry knowledge provide the foundation that 
+                    makes ThaFamilyBeats a trusted name in the LA music scene.
+                  </p>
+                </div>
               </div>
 
-              <div className="border-t border-border pt-8 space-y-4">
-                <div>
-                  <h3 className="font-display text-xl font-bold mb-2">Angelo Knight</h3>
-                  <p className="text-sm text-muted-foreground mb-3">Producer, Engineer & Artist</p>
+              <div className="border-t border-border pt-8 flex flex-col md:flex-row gap-6 items-start">
+                <div className="w-32 h-32 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                  <span className="text-4xl text-muted-foreground">AK</span>
                 </div>
-                <p className="text-muted-foreground">
-                  Angelo Knight represents the fresh, innovative energy of ThaFamilyBeats. As a multi-talented producer, 
-                  engineer, and artist, Angelo brings a unique perspective shaped by both his creative artistry and 
-                  technical education at LA Film School's audio program. His youth and hunger drive him to stay on the 
-                  cutting edge of production techniques and sonic trends. Angelo's dual role as both creator and technician 
-                  allows him to connect with artists on a deeper level, understanding their vision from the inside out. 
-                  His passion for perfection and modern approach to music production ensures that ThaFamilyBeats stays 
-                  ahead of the curve.
-                </p>
+                <div className="space-y-4 flex-1">
+                  <div>
+                    <h3 className="font-display text-xl font-bold mb-2">Angelo Knight</h3>
+                    <p className="text-sm text-muted-foreground mb-3">Producer, Engineer & Artist</p>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Angelo Knight represents the fresh, innovative energy of ThaFamilyBeats. As a multi-talented producer, 
+                    engineer, and artist, Angelo brings a unique perspective shaped by both his creative artistry and 
+                    technical education at LA Film School's audio program. His youth and hunger drive him to stay on the 
+                    cutting edge of production techniques and sonic trends. Angelo's dual role as both creator and technician 
+                    allows him to connect with artists on a deeper level, understanding their vision from the inside out. 
+                    His passion for perfection and modern approach to music production ensures that ThaFamilyBeats stays 
+                    ahead of the curve.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

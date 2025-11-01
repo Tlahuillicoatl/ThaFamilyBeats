@@ -24,9 +24,9 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
   const { toast } = useToast();
 
   const paymentInfo = {
-    cashapp: "$J11onthebeat",
+    cashapp: "$811onthebeat",
     zelle: "tfb@thafamilybeats.com",
-    crypto: "Your Bitcoin Wallet Address", // You'll need to provide this
+    crypto: "Your Bitcoin Wallet Address",
     paypal: "tfb@thafamilybeats.com"
   };
 

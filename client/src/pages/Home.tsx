@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Mic, Music, Headphones, ChevronRight } from "lucide-react";
-import logoPath from "@assets/Untitled Project_1760566680142.png";
+import logoPath from "@assets/TransparentTFB_1761962201894.png";
 import ServiceCard from "@/components/ServiceCard";
 import { useState } from "react";
 import CheckoutModal from "@/components/CheckoutModal";
