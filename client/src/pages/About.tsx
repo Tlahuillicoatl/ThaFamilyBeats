@@ -73,9 +73,9 @@ export default function About() {
               <CardTitle className="font-display text-2xl">Meet The Team</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="w-32 h-32 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                  <span className="text-4xl text-muted-foreground">8:11</span>
+              <div className="flex flex-col md:flex-row gap-8 items-start">
+                <div className="w-full md:w-64 h-64 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                  <span className="text-6xl font-display font-bold text-muted-foreground">8:11</span>
                 </div>
                 <div className="space-y-4 flex-1">
                   <div>
@@ -93,9 +93,9 @@ export default function About() {
                 </div>
               </div>
 
-              <div className="border-t border-border pt-8 flex flex-col md:flex-row gap-6 items-start">
-                <div className="w-32 h-32 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                  <span className="text-4xl text-muted-foreground">AK</span>
+              <div className="border-t border-border pt-8 flex flex-col md:flex-row gap-8 items-start">
+                <div className="w-full md:w-64 h-64 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                  <span className="text-6xl font-display font-bold text-muted-foreground">AK</span>
                 </div>
                 <div className="space-y-4 flex-1">
                   <div>
