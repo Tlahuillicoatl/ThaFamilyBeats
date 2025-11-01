@@ -17,6 +17,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { LogOut, Download, Upload, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ObjectUploader } from "@/components/ObjectUploader";
+import type { UploadResult } from "@uppy/core";
 import {
   Dialog,
   DialogContent,
@@ -175,13 +176,59 @@ export default function Admin() {
     });
   };
 
-  const handleUploadComplete = (objectPath: string) => {
-    setUploadedAudioURL(objectPath);
-    
-    toast({
-      title: "Upload Successful",
-      description: "Audio file uploaded. Now add beat details.",
+  const [objectPathMap, setObjectPathMap] = useState<Record<string, string>>({});
+
+  const handleGetUploadParameters = async () => {
+    const response = await fetch("/api/objects/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     });
+    const data = await response.json();
+    
+    // Strip query parameters from the uploadURL before storing
+    // (Uppy reports URLs without query params in the complete event)
+    const uploadURLWithoutQuery = data.uploadURL.split('?')[0];
+    
+    // Store the mapping from uploadURL to objectPath
+    setObjectPathMap(prev => ({
+      ...prev,
+      [uploadURLWithoutQuery]: data.objectPath
+    }));
+    
+    return {
+      method: "PUT" as const,
+      url: data.uploadURL,
+    };
+  };
+
+  const handleUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+    if (result.successful && result.successful.length > 0) {
+      const uploadedFile = result.successful[0];
+      const uploadURL = uploadedFile.uploadURL || "";
+      
+      // Strip query parameters to match our map key (stored without query params)
+      const uploadURLWithoutQuery = uploadURL.split('?')[0];
+      
+      // Use the objectPath from our mapping
+      const objectPath = objectPathMap[uploadURLWithoutQuery];
+      
+      if (!objectPath) {
+        console.error("Upload mapping not found for:", uploadURLWithoutQuery);
+        toast({
+          title: "Upload Error",
+          description: "Could not find uploaded file mapping",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setUploadedAudioURL(objectPath);
+      
+      toast({
+        title: "Upload Successful",
+        description: "Audio file uploaded. Now add beat details.",
+      });
+    }
   };
 
   const onSubmitBeat = async (values: z.infer<typeof beatFormSchema>) => {
@@ -390,7 +437,7 @@ export default function Admin() {
                         <ObjectUploader
                           maxNumberOfFiles={1}
                           maxFileSize={52428800}
-                          uploadEndpoint="/api/objects/upload"
+                          onGetUploadParameters={handleGetUploadParameters}
                           onComplete={handleUploadComplete}
                         >
                           <Upload className="h-4 w-4 mr-2" />

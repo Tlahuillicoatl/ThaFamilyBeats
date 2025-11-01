@@ -156,7 +156,8 @@ export class ObjectStorageService {
     if (!entityDir.endsWith("/")) {
       entityDir = `${entityDir}/`;
     }
-    const objectEntityPath = `${entityDir}${entityId}`;
+    // Files are stored in the uploads/ subdirectory
+    const objectEntityPath = `${entityDir}uploads/${entityId}`;
     const { bucketName, objectName } = parseObjectPath(objectEntityPath);
     const bucket = objectStorageClient.bucket(bucketName);
     const objectFile = bucket.file(objectName);
@@ -195,7 +196,14 @@ export class ObjectStorageService {
       return rawObjectPath;
     }
   
-    const entityId = rawObjectPath.slice(objectEntityDir.length);
+    // Extract the path after the private object directory
+    let entityId = rawObjectPath.slice(objectEntityDir.length);
+    
+    // Strip the /uploads/ prefix if present (files are uploaded to .private/uploads/)
+    if (entityId.startsWith("uploads/")) {
+      entityId = entityId.slice("uploads/".length);
+    }
+    
     return `/objects/${entityId}`;
   }
 

@@ -3,8 +3,6 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTransactionSchema, insertBeatSchema } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
-import { Client as ObjectStorageClient } from "@replit/object-storage";
-import { randomUUID } from "crypto";
 import "./types";
 
 if (!process.env.ADMIN_PASSWORD) {
@@ -89,39 +87,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Object storage routes - Reference: blueprint:javascript_object_storage
   app.get("/objects/:objectPath(*)", async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
     try {
-      // Extract the object path from the URL
-      const objectPath = req.params.objectPath;
-      console.log(`Serving object: ${objectPath}`);
-      
-      // Use Replit Object Storage client
-      const client = new ObjectStorageClient();
-      
-      // Check if file exists first
-      const existsResult = await client.exists(objectPath);
-      if (!existsResult.ok || !existsResult.value) {
-        console.error(`Object not found: ${objectPath}`);
-        return res.status(404).json({ error: 'File not found' });
+      const objectFile = await objectStorageService.getObjectEntityFile(
+        req.path,
+      );
+      objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error checking object access:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
       }
-      
-      // Determine content type based on file extension
-      const extension = objectPath.split('.').pop()?.toLowerCase();
-      const contentType = extension === 'mp3' ? 'audio/mpeg' :
-                         extension === 'wav' ? 'audio/wav' :
-                         extension === 'ogg' ? 'audio/ogg' :
-                         'application/octet-stream';
-      
-      res.set({
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=3600',
-      });
-      
-      // Download and pipe the stream to the response
-      const stream = await client.downloadAsStream(objectPath);
-      stream.pipe(res);
-    } catch (error: any) {
-      console.error("Error serving object:", error);
-      return res.status(500).json({ error: 'Error serving file' });
+      return res.sendStatus(500);
     }
   });
 
@@ -131,52 +108,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      const chunks: Buffer[] = [];
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
       
-      req.on('data', (chunk) => {
-        chunks.push(chunk);
-      });
+      // Extract the object path from the upload URL for later use
+      const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
       
-      req.on('end', async () => {
-        try {
-          const buffer = Buffer.concat(chunks);
-          
-          // Generate unique filename
-          const fileId = randomUUID();
-          const contentType = req.headers['content-type'] || 'audio/mpeg';
-          const extension = contentType.includes('mpeg') ? 'mp3' : 
-                           contentType.includes('wav') ? 'wav' : 
-                           contentType.includes('ogg') ? 'ogg' : 'audio';
-          const filename = `public/beats/${fileId}.${extension}`;
-          
-          console.log(`Uploading file: ${filename}, size: ${buffer.length} bytes`);
-          
-          // Upload using Replit Object Storage client
-          const client = new ObjectStorageClient();
-          const result = await client.uploadFromBytes(filename, buffer);
-          
-          if (!result.ok) {
-            console.error('Upload failed:', result.error);
-            return res.status(500).json({ message: result.error });
-          }
-          
-          console.log('Upload successful:', filename);
-          
-          // Return the public path
-          const publicPath = `/objects/${filename}`;
-          res.json({ objectPath: publicPath });
-        } catch (error: any) {
-          console.error('Error processing upload:', error);
-          res.status(500).json({ message: error.message });
-        }
-      });
-      
-      req.on('error', (error) => {
-        console.error('Upload stream error:', error);
-        res.status(500).json({ message: 'Upload failed' });
-      });
+      res.json({ uploadURL, objectPath });
     } catch (error: any) {
-      console.error("Error handling upload:", error);
+      console.error("Error generating upload URL:", error);
       res.status(500).json({ message: error.message });
     }
   });

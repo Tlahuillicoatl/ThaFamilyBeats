@@ -3,23 +3,28 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import Uppy from "@uppy/core";
 import { DashboardModal } from "@uppy/react";
-import XHRUpload from "@uppy/xhr-upload";
+import AwsS3 from "@uppy/aws-s3";
 import type { UploadResult } from "@uppy/core";
 import { Button } from "@/components/ui/button";
 
 interface ObjectUploaderProps {
   maxNumberOfFiles?: number;
   maxFileSize?: number;
-  uploadEndpoint: string;
-  onComplete?: (objectPath: string) => void;
+  onGetUploadParameters: () => Promise<{
+    method: "PUT";
+    url: string;
+  }>;
+  onComplete?: (
+    result: UploadResult<Record<string, unknown>, Record<string, unknown>>
+  ) => void;
   buttonClassName?: string;
   children: ReactNode;
 }
 
 export function ObjectUploader({
   maxNumberOfFiles = 1,
-  maxFileSize = 52428800, // 50MB default
-  uploadEndpoint,
+  maxFileSize = 52428800,
+  onGetUploadParameters,
   onComplete,
   buttonClassName,
   children,
@@ -34,25 +39,12 @@ export function ObjectUploader({
       },
       autoProceed: false,
     })
-      .use(XHRUpload, {
-        endpoint: uploadEndpoint,
-        method: 'POST',
-        formData: false,
-        headers: {
-          'Content-Type': 'audio/mpeg',
-        },
-        getResponseData: (xhr: XMLHttpRequest) => {
-          const response = JSON.parse(xhr.responseText);
-          return {
-            url: response.objectPath,
-          };
-        },
+      .use(AwsS3, {
+        shouldUseMultipart: false,
+        getUploadParameters: onGetUploadParameters,
       })
       .on("complete", (result) => {
-        if (result.successful && result.successful.length > 0) {
-          const response = result.successful[0].response as any;
-          onComplete?.(response.body.objectPath || response.uploadURL);
-        }
+        onComplete?.(result);
       })
   );
 
