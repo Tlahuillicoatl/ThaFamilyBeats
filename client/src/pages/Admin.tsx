@@ -17,7 +17,6 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { LogOut, Download, Upload, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ObjectUploader } from "@/components/ObjectUploader";
-import type { UploadResult } from "@uppy/core";
 import {
   Dialog,
   DialogContent,
@@ -176,41 +175,13 @@ export default function Admin() {
     });
   };
 
-  const [objectPathMap, setObjectPathMap] = useState<Record<string, string>>({});
-
-  const handleGetUploadParameters = async () => {
-    const response = await fetch("/api/objects/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+  const handleUploadComplete = (objectPath: string) => {
+    setUploadedAudioURL(objectPath);
+    
+    toast({
+      title: "Upload Successful",
+      description: "Audio file uploaded. Now add beat details.",
     });
-    const data = await response.json();
-    
-    // Store the mapping from uploadURL to objectPath
-    setObjectPathMap(prev => ({
-      ...prev,
-      [data.uploadURL]: data.objectPath
-    }));
-    
-    return {
-      method: "PUT" as const,
-      url: data.uploadURL,
-    };
-  };
-
-  const handleUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
-    if (result.successful && result.successful.length > 0) {
-      const uploadedFile = result.successful[0];
-      const uploadURL = uploadedFile.uploadURL || "";
-      
-      // Use the objectPath from our mapping
-      const objectPath = objectPathMap[uploadURL] || uploadURL;
-      setUploadedAudioURL(objectPath);
-      
-      toast({
-        title: "Upload Successful",
-        description: "Audio file uploaded. Now add beat details.",
-      });
-    }
   };
 
   const onSubmitBeat = async (values: z.infer<typeof beatFormSchema>) => {
@@ -419,7 +390,7 @@ export default function Admin() {
                         <ObjectUploader
                           maxNumberOfFiles={1}
                           maxFileSize={52428800}
-                          onGetUploadParameters={handleGetUploadParameters}
+                          uploadEndpoint="/api/objects/upload"
                           onComplete={handleUploadComplete}
                         >
                           <Upload className="h-4 w-4 mr-2" />
