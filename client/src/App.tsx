@@ -18,21 +18,27 @@ function Router() {
   return (
     <Switch>
       <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin">
-        <Admin />
+      <Route path="/admin" component={Admin} />
+      <Route path="/studio-booking">
+        <Layout><StudioBooking /></Layout>
+      </Route>
+      <Route path="/thafamilymixes">
+        <Layout><ThaFamilyMixes /></Layout>
+      </Route>
+      <Route path="/sync-licensing">
+        <Layout><SyncLicensing /></Layout>
+      </Route>
+      <Route path="/about">
+        <Layout><About /></Layout>
+      </Route>
+      <Route path="/contact">
+        <Layout><Contact /></Layout>
       </Route>
       <Route path="/">
-        <Layout>
-          <Switch>
-            <Route path="/" component={Home} />
-            <Route path="/studio-booking" component={StudioBooking} />
-            <Route path="/thafamilymixes" component={ThaFamilyMixes} />
-            <Route path="/sync-licensing" component={SyncLicensing} />
-            <Route path="/about" component={About} />
-            <Route path="/contact" component={Contact} />
-            <Route component={NotFound} />
-          </Switch>
-        </Layout>
+        <Layout><Home /></Layout>
+      </Route>
+      <Route>
+        <Layout><NotFound /></Layout>
       </Route>
     </Switch>
   );
