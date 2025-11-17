@@ -124,19 +124,19 @@ export default function About() {
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start">
                   <span className="text-chart-3 mr-2">✓</span>
-                  Neumann U87 & TLM 103 microphones
+                  Neumann TLM 103 microphone
                 </li>
                 <li className="flex items-start">
                   <span className="text-chart-3 mr-2">✓</span>
-                  SSL & Universal Audio preamps and interfaces
+                  Avalon 737 preamp
                 </li>
                 <li className="flex items-start">
                   <span className="text-chart-3 mr-2">✓</span>
-                  Pro Tools HD & Logic Pro X workstations
+                  Focusrite Liquid Saffire 56 & UAD Apollo Twin X Duo interfaces
                 </li>
                 <li className="flex items-start">
                   <span className="text-chart-3 mr-2">✓</span>
-                  Genelec & Yamaha monitoring systems
+                  Yamaha & JBL monitoring systems
                 </li>
                 <li className="flex items-start">
                   <span className="text-chart-3 mr-2">✓</span>
