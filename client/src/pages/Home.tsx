@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Mic, Music, Headphones, ChevronRight } from "lucide-react";
 import logoPath from "@assets/TransparentTFB_1761962201894.png";
+import studioVideo from "@assets/P1110181_1763402579250.mp4";
 import ServiceCard from "@/components/ServiceCard";
 import { useState } from "react";
 import CheckoutModal from "@/components/CheckoutModal";
@@ -18,13 +19,23 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          data-testid="video-hero-background"
+        >
+          <source src={studioVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-background" />
         <div className="relative z-10 text-center max-w-5xl mx-auto px-4">
-          <img src={logoPath} alt="ThaFamilyBeats" className="w-64 md:w-96 mx-auto mb-12" />
-          <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">
+          <img src={logoPath} alt="ThaFamilyBeats" className="w-64 md:w-96 mx-auto mb-12 drop-shadow-2xl" />
+          <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 text-white drop-shadow-lg">
             Where Sound Meets <span className="text-ring">Excellence</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-md">
             Professional recording studio delivering premium sound quality and exceptional service for artists, producers, and creators.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -35,7 +46,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/sync-licensing">
-              <Button size="lg" variant="outline" className="gap-2 backdrop-blur-sm" data-testid="button-browse-beats">
+              <Button size="lg" variant="outline" className="gap-2 backdrop-blur-sm bg-white/10 hover:bg-white/20 border-white/30 text-white" data-testid="button-browse-beats">
                 Browse Beats
               </Button>
             </Link>
