@@ -13,21 +13,33 @@ interface CheckoutModalProps {
   onClose: () => void;
   service: string;
   price: string;
+  serviceType?: "studio_booking" | "mixing" | "licensing" | "general";
+  sessionDate?: string;
+  hours?: number;
 }
 
-export default function CheckoutModal({ isOpen, onClose, service, price }: CheckoutModalProps) {
+export default function CheckoutModal({
+  isOpen,
+  onClose,
+  service,
+  price,
+  serviceType = "general",
+  sessionDate,
+  hours,
+}: CheckoutModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
   const [copied, setCopied] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const paymentInfo = {
-    cashapp: "$811onthebeat",
-    zelle: "tfb@thafamilybeats.com",
-    crypto: "Your Bitcoin Wallet Address",
-    paypal: "tfb@thafamilybeats.com"
+    cashapp: "$J11Studios",
+    zelle: "96emmanuelrivera@gmail.com",
+    crypto: "bc1qcjasguw086wn59clku24vc0nc0jgn6l4mx7ygv",
+    paypal: "96emmanuelrivera@gmail.com"
   };
 
   const copyToClipboard = (text: string, type: string) => {
@@ -58,21 +70,41 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
       const priceNumber = parseFloat(price.replace(/[^0-9.]/g, ''));
       const amountInCents = Math.round(priceNumber * 100);
 
-      await apiRequest("POST", "/api/transactions", {
-        customerName,
-        customerEmail,
-        service,
-        amount: amountInCents,
-        paymentMethod: paymentMethod as "card" | "paypal" | "cashapp" | "zelle" | "crypto",
-        status: "pending",
-      });
-
       if (paymentMethod === "card") {
+        const response = await apiRequest("POST", "/api/payments/checkout", {
+          customerName,
+          customerEmail,
+          phone: customerPhone || undefined,
+          service,
+          serviceType,
+          amount: amountInCents,
+          paymentMethod: "card",
+          sessionDate: sessionDate || undefined,
+          hours: hours || undefined,
+        });
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+
         toast({
-          title: "Payment Submitted",
-          description: "Your booking is being processed.",
+          title: "Checkout Error",
+          description: "Unable to start card checkout.",
+          variant: "destructive",
         });
       } else {
+        await apiRequest("POST", "/api/bookings", {
+          customerName,
+          customerEmail,
+          phone: customerPhone || undefined,
+          service,
+          serviceType,
+          amount: amountInCents,
+          paymentMethod: paymentMethod as "paypal" | "cashapp" | "zelle" | "crypto",
+          sessionDate: sessionDate || undefined,
+          hours: hours || undefined,
+        });
         toast({
           title: "Payment Instructions Sent",
           description: "Please complete the payment and we'll confirm your booking shortly.",
@@ -81,6 +113,7 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
 
       setCustomerName("");
       setCustomerEmail("");
+      setCustomerPhone("");
       onClose();
     } catch (error: any) {
       toast({
@@ -179,6 +212,17 @@ export default function CheckoutModal({ isOpen, onClose, service, price }: Check
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
                 required
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone (optional)</Label>
+              <Input
+                id="phone"
+                placeholder="+1 (555) 000-0000"
+                className="mt-1.5"
+                data-testid="input-phone"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
               />
             </div>
 

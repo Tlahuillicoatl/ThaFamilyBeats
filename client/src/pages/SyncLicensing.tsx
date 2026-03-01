@@ -163,6 +163,7 @@ export default function SyncLicensing() {
         onClose={() => setCheckoutOpen(false)}
         service={selectedBeat.name}
         price={selectedBeat.price}
+        serviceType="licensing"
       />
     </div>
   );

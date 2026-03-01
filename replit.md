@@ -42,9 +42,9 @@ Preferred communication style: Simple, everyday language.
 - Consistent border radius (lg: 9px, md: 6px, sm: 3px)
 
 **Branding:**
-- Lead Engineer: 8:11 (30+ years experience)
-- Producer/Engineer/Artist: Angelo Knight
-- CashApp: $811onthebeat
+- Lead Engineer: J11 (30+ years experience)
+- Producer/Engineer/Artist: Sol
+- CashApp: $J11Studios
 - Contact: tfb@thafamilybeats.com, +1 (213) 418-4295
 
 **State Management:**

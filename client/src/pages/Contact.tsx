@@ -6,8 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, Phone } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Contact() {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,9 +20,43 @@ export default function Contact() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    if (!formData.service) {
+      toast({
+        title: "Missing Service",
+        description: "Please choose a service before sending your message.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiRequest("POST", "/api/contact", {
+        ...formData,
+        phone: formData.phone || undefined,
+      });
+      toast({
+        title: "Message Sent",
+        description: "Thanks for reaching out. We'll get back to you soon.",
+      });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Unable to Send Message",
+        description: error.message || "Please try again in a few minutes.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -48,6 +86,7 @@ export default function Contact() {
                     placeholder="John Doe"
                     className="mt-1.5"
                     data-testid="input-contact-name"
+                    required
                   />
                 </div>
                 <div>
@@ -60,6 +99,7 @@ export default function Contact() {
                     placeholder="john@example.com"
                     className="mt-1.5"
                     data-testid="input-contact-email"
+                    required
                   />
                 </div>
                 <div>
@@ -97,10 +137,11 @@ export default function Contact() {
                     rows={5}
                     className="mt-1.5"
                     data-testid="textarea-message"
+                    required
                   />
                 </div>
                 <Button type="submit" className="w-full" size="lg" data-testid="button-send-message">
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </CardContent>

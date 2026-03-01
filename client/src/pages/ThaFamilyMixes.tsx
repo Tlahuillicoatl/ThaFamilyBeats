@@ -161,6 +161,7 @@ export default function ThaFamilyMixes() {
         onClose={() => setCheckoutOpen(false)}
         service={selectedPackage.name}
         price={selectedPackage.price}
+        serviceType="mixing"
       />
     </div>
   );

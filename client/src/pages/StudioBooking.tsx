@@ -138,6 +138,9 @@ export default function StudioBooking() {
         onClose={() => setCheckoutOpen(false)}
         service={`Studio Session - ${hours} ${hours === 1 ? 'Hour' : 'Hours'}`}
         price={`$${totalPrice}`}
+        serviceType="studio_booking"
+        sessionDate={date ? date.toISOString() : undefined}
+        hours={hours}
       />
     </div>
   );

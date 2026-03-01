@@ -71,6 +71,7 @@ const beatFormSchema = z.object({
 export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+  const [csrfToken, setCsrfToken] = useState("");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadedAudioURL, setUploadedAudioURL] = useState<string>("");
   const [, setLocation] = useLocation();
@@ -100,6 +101,22 @@ export default function Admin() {
     checkAdminStatus();
   }, []);
 
+  useEffect(() => {
+    const loadCsrfToken = async () => {
+      if (!isAdmin || csrfToken) return;
+      try {
+        const response = await fetch("/api/admin/csrf", { credentials: "include" });
+        const data = await response.json();
+        if (data.csrfToken) {
+          setCsrfToken(data.csrfToken);
+        }
+      } catch (_error) {
+        // no-op: actions will fail safely without a valid CSRF token
+      }
+    };
+    loadCsrfToken();
+  }, [isAdmin, csrfToken]);
+
   const checkAdminStatus = async () => {
     try {
       const response = await fetch("/api/admin/check");
@@ -109,6 +126,9 @@ export default function Admin() {
         setLocation("/admin/login");
       } else {
         setIsAdmin(true);
+        if (data.csrfToken) {
+          setCsrfToken(data.csrfToken);
+        }
       }
     } catch (error) {
       setLocation("/admin/login");
@@ -119,7 +139,9 @@ export default function Admin() {
 
   const handleLogout = async () => {
     try {
-      await apiRequest("POST", "/api/admin/logout", {});
+      await apiRequest("POST", "/api/admin/logout", {}, {
+        "x-csrf-token": csrfToken,
+      });
       toast({
         title: "Logged Out",
         description: "You have been logged out successfully",
@@ -179,9 +201,8 @@ export default function Admin() {
   const [objectPathMap, setObjectPathMap] = useState<Record<string, string>>({});
 
   const handleGetUploadParameters = async () => {
-    const response = await fetch("/api/objects/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await apiRequest("POST", "/api/objects/upload", {}, {
+      "x-csrf-token": csrfToken,
     });
     const data = await response.json();
     
@@ -246,6 +267,8 @@ export default function Admin() {
         ...values,
         audioPath: uploadedAudioURL,
         price: values.price * 100,
+      }, {
+        "x-csrf-token": csrfToken,
       });
 
       await queryClient.invalidateQueries({ queryKey: ["/api/beats"] });
@@ -273,7 +296,9 @@ export default function Admin() {
     }
 
     try {
-      await apiRequest("DELETE", `/api/beats/${id}`, {});
+      await apiRequest("DELETE", `/api/beats/${id}`, {}, {
+        "x-csrf-token": csrfToken,
+      });
       await queryClient.invalidateQueries({ queryKey: ["/api/beats"] });
 
       toast({
