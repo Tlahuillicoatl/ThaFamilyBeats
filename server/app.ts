@@ -8,6 +8,7 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable must be set");
 }
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
 const rateLimits = new Map<string, { count: number; resetAt: number }>();
 
 function rateLimiter(options: { windowMs: number; max: number }) {
@@ -56,7 +57,7 @@ export async function createConfiguredServer() {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET,
+      secret: SESSION_SECRET,
       name: "tfb.sid",
       resave: false,
       saveUninitialized: false,
