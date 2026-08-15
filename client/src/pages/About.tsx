@@ -83,30 +83,30 @@ export default function About() {
                     <p className="text-sm text-muted-foreground mb-3">Lead Engineer & Producer</p>
                   </div>
                   <p className="text-muted-foreground">
-                    With over 30 years in the music industry, J11 is a seasoned engineer and producer from Los Angeles 
+                    With over 30 years in the music industry, J11 is a seasoned engineer and producer from Long Beach
                     who has seen and shaped the evolution of modern music production. His three decades of experience 
                     bring invaluable wisdom and technical expertise to every project at ThaFamilyBeats. Having worked 
                     through multiple eras of recording technology and music trends, J11 brings a deep understanding of 
                     what makes great music timeless. His mentorship and industry knowledge provide the foundation that 
-                    makes ThaFamilyBeats a trusted name in the LA music scene.
+                    makes ThaFamilyBeats a trusted name in the Long Beach music scene.
                   </p>
                 </div>
               </div>
 
               <div className="border-t border-border pt-8 flex flex-col md:flex-row gap-8 items-start">
                 <div className="w-full md:w-64 h-64 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                  <span className="text-6xl font-display font-bold text-muted-foreground">SOL</span>
+                  <span className="text-5xl font-display font-bold text-muted-foreground">LESOL</span>
                 </div>
                 <div className="space-y-4 flex-1">
                   <div>
-                    <h3 className="font-display text-xl font-bold mb-2">Sol</h3>
+                    <h3 className="font-display text-xl font-bold mb-2">LeSol</h3>
                     <p className="text-sm text-muted-foreground mb-3">Producer, Engineer & Artist</p>
                   </div>
                   <p className="text-muted-foreground">
-                    Sol represents the fresh, innovative energy of ThaFamilyBeats. As a multi-talented producer, 
-                    engineer, and artist, Sol brings a unique perspective shaped by both his creative artistry and 
+                    LeSol represents the fresh, innovative energy of ThaFamilyBeats. As a multi-talented producer,
+                    engineer, and artist, LeSol brings a unique perspective shaped by both his creative artistry and
                     technical education at LA Film School's audio program. His youth and hunger drive him to stay on the 
-                    cutting edge of production techniques and sonic trends. Sol's dual role as both creator and technician 
+                    cutting edge of production techniques and sonic trends. LeSol's dual role as both creator and technician
                     allows him to connect with artists on a deeper level, understanding their vision from the inside out. 
                     His passion for perfection and modern approach to music production ensures that ThaFamilyBeats stays 
                     ahead of the curve.

@@ -43,9 +43,9 @@ Preferred communication style: Simple, everyday language.
 
 **Branding:**
 - Lead Engineer: J11 (30+ years experience)
-- Producer/Engineer/Artist: Sol
+- Producer/Engineer/Artist: LeSol
 - CashApp: $J11Studios
-- Contact: tfb@thafamilybeats.com, +1 (213) 418-4295
+- Contact: tfbmusictechnology@gmail.com, +1 213 879-4379
 
 **State Management:**
 - React Query for async data fetching and caching

@@ -1,168 +1,119 @@
+import { Link } from "wouter";
+import { ArrowRight, AudioLines, Headphones, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Headphones, Sparkles, Zap } from "lucide-react";
-import { useState } from "react";
-import CheckoutModal from "@/components/CheckoutModal";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+type MixReference = {
+  title: string;
+  artist: string;
+  genre: string;
+  beforeSrc: string;
+  afterSrc: string;
+};
+
+// Add paired audio files here as new mix references become available.
+const mixReferences: MixReference[] = [];
 
 export default function ThaFamilyMixes() {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState({ name: "", price: "" });
-
-  const packages = [
-    {
-      id: 1,
-      name: "Mixing",
-      price: "$350",
-      icon: Headphones,
-      popular: true,
-      features: [
-        "Professional mixing",
-        "Unlimited revisions",
-        "Stereo mix file",
-        "Fast turnaround",
-      ],
-    },
-    {
-      id: 2,
-      name: "Mastering",
-      price: "Contact for pricing",
-      icon: Sparkles,
-      features: [
-        "Professional mastering",
-        "Radio-ready quality",
-        "Multiple format delivery",
-        "Industry standard loudness",
-      ],
-    },
-    {
-      id: 3,
-      name: "Mix + Master Bundle",
-      price: "Contact for pricing",
-      icon: Zap,
-      features: [
-        "Complete professional mixing",
-        "Professional mastering",
-        "Unlimited revisions",
-        "All file formats",
-        "Priority turnaround",
-      ],
-    },
-  ];
-
-  const handleBooking = (pkg: { name: string; price: string }) => {
-    if (pkg.price === "Contact for pricing") {
-      window.location.href = "/contact";
-      return;
-    }
-    setSelectedPackage(pkg);
-    setCheckoutOpen(true);
-  };
-
   return (
     <div className="min-h-screen py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">ThaFamilyMixes</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Professional mixing and mastering services to make your tracks radio-ready and sound incredible on any platform.
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-14">
+          <p className="brand-kicker mb-3">Hear the difference</p>
+          <h1 className="text-4xl md:text-6xl font-display font-semibold mb-5">Mix References</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Compare raw or rough recordings with the final ThaFamilyBeats mix. Use headphones for the clearest before-and-after experience.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {packages.map((pkg) => (
-            <Card key={pkg.id} className={`hover-elevate transition-all ${pkg.popular ? 'border-ring' : ''} relative`}>
-              {pkg.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-ring text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                    MOST POPULAR
-                  </span>
-                </div>
-              )}
-              <CardHeader>
-                <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center mb-4">
-                  <pkg.icon className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="font-display text-xl">{pkg.name}</CardTitle>
-                <CardDescription>
-                  <span className="text-3xl font-mono font-bold text-foreground">{pkg.price}</span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {pkg.features.map((feature, index) => (
-                    <li key={index} className="text-sm text-muted-foreground flex items-start">
-                      <span className="text-chart-3 mr-2">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  onClick={() => handleBooking({ name: pkg.name, price: pkg.price })}
-                  className="w-full"
-                  variant={pkg.popular ? "default" : "outline"}
-                  data-testid={`button-book-${pkg.id}`}
-                >
-                  {pkg.price === "Contact for pricing" ? "Contact Us" : "Book Now"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        {mixReferences.length > 0 ? (
+          <div className="space-y-8 mb-16">
+            {mixReferences.map((reference) => (
+              <Card key={`${reference.artist}-${reference.title}`} className="overflow-hidden">
+                <CardHeader className="border-b border-border/70">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <CardTitle className="font-display text-2xl">{reference.title}</CardTitle>
+                      <CardDescription>{reference.artist}</CardDescription>
+                    </div>
+                    <span className="text-xs uppercase tracking-[0.2em] text-primary">{reference.genre}</span>
+                  </div>
+                </CardHeader>
+                <CardContent className="grid gap-6 pt-6 md:grid-cols-2">
+                  <div className="rounded-xl border border-border bg-black/30 p-5">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Before</p>
+                    <audio controls preload="metadata" className="w-full" src={reference.beforeSrc}>
+                      Your browser does not support audio playback.
+                    </audio>
+                  </div>
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary">After</p>
+                    <audio controls preload="metadata" className="w-full" src={reference.afterSrc}>
+                      Your browser does not support audio playback.
+                    </audio>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card className="brand-panel mb-16 overflow-hidden border-primary/20">
+            <CardContent className="flex flex-col items-center px-6 py-16 text-center">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+                <AudioLines className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="mb-3 font-display text-3xl font-semibold">Before-and-after audio is coming soon</h2>
+              <p className="max-w-xl text-muted-foreground leading-relaxed">
+                We are preparing matched examples so you can hear exactly how our engineers improve balance, clarity, depth, and impact.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
-        <div className="max-w-4xl mx-auto">
+        <div className="grid gap-6 mb-16 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle className="font-display text-2xl">Our Mixing Process</CardTitle>
-              <CardDescription>How we transform your tracks into professional releases</CardDescription>
+              <Headphones className="h-6 w-6 text-primary mb-3" />
+              <CardTitle className="font-display text-xl">Balance & Clarity</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-mono font-bold">
-                  1
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold mb-2">Upload Your Stems</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Send us your individual track stems and reference tracks for the sound you're aiming for.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-mono font-bold">
-                  2
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold mb-2">Professional Mixing</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Our experienced engineers craft your mix using industry-standard tools and techniques.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-mono font-bold">
-                  3
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold mb-2">Revisions & Mastering</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Review your mix, request changes, and receive the final mastered track ready for release.
-                  </p>
-                </div>
-              </div>
+            <CardContent className="text-sm text-muted-foreground leading-relaxed">
+              Listen for clearer vocals, defined instruments, and a mix where every element has its own space.
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <AudioLines className="h-6 w-6 text-primary mb-3" />
+              <CardTitle className="font-display text-xl">Depth & Movement</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground leading-relaxed">
+              Notice the wider stereo image, intentional dynamics, and front-to-back dimension of the final mix.
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Sparkles className="h-6 w-6 text-primary mb-3" />
+              <CardTitle className="font-display text-xl">Release-Ready Finish</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground leading-relaxed">
+              Compare the energy, consistency, and translation prepared for headphones, speakers, and streaming platforms.
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      <CheckoutModal
-        isOpen={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        service={selectedPackage.name}
-        price={selectedPackage.price}
-        serviceType="mixing"
-      />
+        <section className="brand-cta rounded-2xl border border-primary/25 px-6 py-12 text-center md:px-12">
+          <p className="brand-kicker mb-3">Ready for your sound?</p>
+          <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4">Book your mix with ThaFamilyBeats</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+            Mixing services and availability are handled through our booking page.
+          </p>
+          <Link href="/studio-booking">
+            <Button size="lg" className="gap-2">
+              View Mixing Services
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </section>
+      </div>
     </div>
   );
 }

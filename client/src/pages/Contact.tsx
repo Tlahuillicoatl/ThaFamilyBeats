@@ -12,12 +12,17 @@ import { apiRequest } from "@/lib/queryClient";
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    service: "",
-    message: "",
+  const [formData, setFormData] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const beat = params.get("beat");
+
+    return {
+      name: "",
+      email: "",
+      phone: "",
+      service: params.get("service") === "licensing" ? "licensing" : "",
+      message: beat ? `I'm interested in sync licensing "${beat}" for my project.` : "",
+    };
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,7 +164,9 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">tfb@thafamilybeats.com</p>
+                    <a className="text-muted-foreground hover:text-primary transition-colors" href="mailto:tfbmusictechnology@gmail.com">
+                      tfbmusictechnology@gmail.com
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -168,7 +175,9 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">+1 (213) 418-4295</p>
+                    <a className="text-muted-foreground hover:text-primary transition-colors" href="tel:+12138794379">
+                      +1 213 879-4379
+                    </a>
                   </div>
                 </div>
               </CardContent>

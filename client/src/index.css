@@ -217,6 +217,48 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* TFB Studios brand system: black, white, electric blue. */
+:root,
+.dark {
+  --button-outline: hsl(216 100% 62% / .35);
+  --badge-outline: hsl(216 100% 62% / .22);
+  --opaque-button-border-intensity: 10;
+  --elevate-1: hsl(216 100% 60% / .07);
+  --elevate-2: hsl(216 100% 60% / .13);
+  --background: 224 60% 2%;
+  --foreground: 0 0% 98%;
+  --border: 220 38% 16%;
+  --card: 224 48% 5%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 218 58% 17%;
+  --popover: 224 46% 6%;
+  --popover-foreground: 0 0% 98%;
+  --popover-border: 218 58% 20%;
+  --primary: 216 100% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 40% 11%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 222 30% 11%;
+  --muted-foreground: 218 12% 65%;
+  --accent: 216 72% 15%;
+  --accent-foreground: 0 0% 100%;
+  --input: 219 42% 22%;
+  --ring: 216 100% 55%;
+  --chart-1: 216 100% 55%;
+  --chart-2: 205 100% 70%;
+  --chart-3: 0 0% 96%;
+  --chart-4: 216 70% 35%;
+  --chart-5: 220 20% 65%;
+  --font-sans: 'Manrope', sans-serif;
+  --font-serif: 'Bodoni Moda', Georgia, serif;
+  --font-display: 'Bodoni Moda', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --primary-border: hsl(216 100% 64% / .65);
+  --secondary-border: hsl(218 55% 24%);
+  --muted-border: hsl(218 42% 20%);
+  --accent-border: hsl(216 75% 28%);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -224,10 +266,170 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 85% 12%, hsl(216 100% 50% / .10), transparent 26rem),
+      radial-gradient(circle at 5% 70%, hsl(216 100% 45% / .06), transparent 30rem);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / .85);
+    color: white;
+  }
+}
+
+.brand-nav {
+  background: linear-gradient(180deg, rgb(0 0 0 / .94), rgb(1 4 12 / .86));
+  border-color: hsl(var(--primary) / .18);
+  box-shadow: 0 16px 45px rgb(0 0 0 / .35);
+}
+
+.brand-nav-logo {
+  box-shadow: 0 0 0 1px hsl(var(--primary) / .45), 0 0 28px hsl(var(--primary) / .18);
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.brand-nav-logo:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 0 1px hsl(var(--primary) / .8), 0 0 34px hsl(var(--primary) / .32);
+}
+
+.brand-hero video {
+  filter: saturate(.65) contrast(1.15) brightness(.72);
+}
+
+.brand-hero-orb {
+  background: radial-gradient(circle, hsl(var(--primary) / .22), transparent 66%);
+  filter: blur(12px);
+  animation: brand-pulse 6s ease-in-out infinite;
+}
+
+.brand-hero-line {
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / .85), transparent);
+  box-shadow: 0 0 24px hsl(var(--primary) / .42);
+}
+
+.brand-wordmark {
+  filter: drop-shadow(0 0 28px hsl(var(--primary) / .22));
+}
+
+.brand-kicker {
+  color: hsl(var(--primary));
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+}
+
+.brand-reveal {
+  animation: brand-reveal .8s cubic-bezier(.2,.7,.2,1) both;
+}
+
+.brand-reveal:nth-child(2) { animation-delay: .08s; }
+.brand-reveal:nth-child(3) { animation-delay: .16s; }
+.brand-reveal:nth-child(4) { animation-delay: .24s; }
+
+.brand-section {
+  position: relative;
+}
+
+.brand-panel,
+.brand-cta {
+  position: relative;
+  border-block: 1px solid hsl(var(--primary) / .14);
+  background:
+    linear-gradient(135deg, hsl(216 70% 9% / .52), transparent 45%),
+    hsl(var(--card) / .62);
+}
+
+.brand-cta {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 120%, hsl(var(--primary) / .28), transparent 48%),
+    linear-gradient(180deg, hsl(var(--card)), hsl(var(--background)));
+}
+
+.brand-card {
+  background:
+    linear-gradient(145deg, hsl(216 70% 11% / .36), transparent 48%),
+    hsl(var(--card) / .92);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .035), 0 18px 55px rgb(0 0 0 / .18);
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+
+.brand-card:hover {
+  transform: translateY(-4px);
+  border-color: hsl(var(--primary) / .48);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), 0 24px 65px rgb(0 0 0 / .28), 0 0 30px hsl(var(--primary) / .08);
+}
+
+.brand-media {
+  border-color: hsl(var(--primary) / .2);
+  box-shadow: 0 20px 55px rgb(0 0 0 / .32);
+  transition: transform .3s ease, border-color .3s ease;
+}
+
+.brand-media:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--primary) / .55);
+}
+
+.brand-credit {
+  border-color: hsl(var(--primary) / .16);
+  background: linear-gradient(145deg, hsl(var(--primary) / .07), hsl(var(--card)) 55%);
+}
+
+.brand-credit:hover {
+  border-color: hsl(var(--primary) / .5);
+  transform: translateY(-3px);
+}
+
+.brand-footer {
+  border-color: hsl(var(--primary) / .18);
+  background: linear-gradient(180deg, hsl(224 50% 5%), hsl(224 60% 2%));
+}
+
+.brand-social {
+  display: inline-flex;
+  padding: .65rem;
+  border: 1px solid hsl(var(--primary) / .25);
+  border-radius: 999px;
+  color: hsl(var(--muted-foreground));
+  transition: color .25s ease, border-color .25s ease, background .25s ease;
+}
+
+.brand-social:hover {
+  color: white;
+  border-color: hsl(var(--primary) / .7);
+  background: hsl(var(--primary) / .12);
+}
+
+@keyframes brand-reveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes brand-pulse {
+  0%, 100% { opacity: .55; transform: scale(.96); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-reveal,
+  .brand-hero-orb {
+    animation: none;
+  }
+
+  .brand-card,
+  .brand-media,
+  .brand-credit,
+  .brand-nav-logo {
+    transition: none;
   }
 }
 

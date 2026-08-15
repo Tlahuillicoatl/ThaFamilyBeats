@@ -3,8 +3,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import CheckoutModal from "@/components/CheckoutModal";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 
 type Beat = {
   id: string;
@@ -17,8 +17,7 @@ type Beat = {
 };
 
 export default function SyncLicensing() {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [selectedBeat, setSelectedBeat] = useState({ name: "", price: "" });
+  const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: beats, isLoading } = useQuery<Beat[]>({
@@ -34,12 +33,8 @@ export default function SyncLicensing() {
     );
   }) || [];
 
-  const handleLicense = (beat: { title: string; price: number }) => {
-    setSelectedBeat({ 
-      name: `Beat License - ${beat.title}`, 
-      price: `$${(beat.price / 100).toFixed(0)}` 
-    });
-    setCheckoutOpen(true);
+  const handleLicense = (beat: { title: string }) => {
+    setLocation(`/contact?service=licensing&beat=${encodeURIComponent(beat.title)}`);
   };
 
   return (
@@ -90,9 +85,6 @@ export default function SyncLicensing() {
                   <span>•</span>
                   <span>{beat.bpm} BPM</span>
                 </div>
-                <div className="text-2xl font-mono font-bold">
-                  ${(beat.price / 100).toFixed(0)}
-                </div>
               </CardContent>
               <CardFooter>
                 <Button
@@ -100,7 +92,7 @@ export default function SyncLicensing() {
                   className="w-full"
                   data-testid={`button-license-${beat.id}`}
                 >
-                  License Beat
+                  Inquire About Licensing
                 </Button>
               </CardFooter>
             </Card>
@@ -149,7 +141,7 @@ export default function SyncLicensing() {
                   </li>
                   <li className="flex items-start">
                     <span className="text-chart-3 mr-2">✓</span>
-                    Instant download
+                    Usage terms tailored to your project
                   </li>
                 </ul>
               </div>
@@ -158,13 +150,6 @@ export default function SyncLicensing() {
         </div>
       </div>
 
-      <CheckoutModal
-        isOpen={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        service={selectedBeat.name}
-        price={selectedBeat.price}
-        serviceType="licensing"
-      />
     </div>
   );
 }

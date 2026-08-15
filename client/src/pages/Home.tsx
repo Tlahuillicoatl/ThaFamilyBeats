@@ -1,24 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Mic, Music, Headphones, ChevronRight } from "lucide-react";
-import logoPath from "@assets/TransparentTFB_1761962201894.png";
+import logoPath from "@assets/tfb-studios-header.png";
 import studioVideo from "@assets/P1110181_1763402579250.mp4";
 import ServiceCard from "@/components/ServiceCard";
-import { useState } from "react";
-import CheckoutModal from "@/components/CheckoutModal";
 
 export default function Home() {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState({ name: "", price: "" });
-
-  const openCheckout = (service: string, price: string) => {
-    setSelectedService({ name: service, price });
-    setCheckoutOpen(true);
-  };
+  const [, setLocation] = useLocation();
 
   return (
     <div className="min-h-screen">
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
+      <section className="brand-hero relative min-h-[92vh] flex items-center justify-center overflow-hidden py-20">
         <video
           autoPlay
           loop
@@ -29,13 +21,16 @@ export default function Home() {
         >
           <source src={studioVideo} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-background" />
-        <div className="relative z-10 text-center max-w-5xl mx-auto px-4">
-          <img src={logoPath} alt="ThaFamilyBeats" className="w-64 md:w-96 mx-auto mb-12 drop-shadow-2xl" />
-          <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 text-white drop-shadow-lg">
-            Where Sound Meets <span className="text-ring">Excellence</span>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.72)_0%,rgba(1,5,16,.76)_52%,hsl(var(--background))_100%)]" />
+        <div className="brand-hero-orb absolute -right-40 top-16 h-[34rem] w-[34rem] rounded-full" />
+        <div className="brand-hero-line absolute left-[-12%] top-[44%] h-px w-[70%] -rotate-12" />
+        <div className="relative z-10 text-center max-w-6xl mx-auto px-4 pt-8">
+          <p className="brand-kicker brand-reveal mb-5">Long Beach · Recording · Mixing · Licensing</p>
+          <img src={logoPath} alt="ThaFamily Beats Studios" className="brand-wordmark brand-reveal w-[min(94vw,880px)] h-auto mx-auto mb-6" />
+          <h1 className="brand-reveal text-4xl md:text-6xl lg:text-7xl font-display font-semibold mb-6 text-white leading-[0.95] tracking-[-0.025em]">
+            Where Sound Meets <span className="text-primary italic">Excellence</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-md">
+          <p className="brand-reveal text-base md:text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
             Professional recording studio delivering premium sound quality and exceptional service for artists, producers, and creators.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -46,7 +41,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/sync-licensing">
-              <Button size="lg" variant="outline" className="gap-2 backdrop-blur-sm bg-white/10 hover:bg-white/20 border-white/30 text-white" data-testid="button-browse-beats">
+              <Button size="lg" variant="outline" className="gap-2 backdrop-blur-sm bg-black/30 border-primary/50 text-white hover:border-primary" data-testid="button-browse-beats">
                 Browse Beats
               </Button>
             </Link>
@@ -54,62 +49,66 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 px-4">
+      <section className="brand-section py-24 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-12">Our Services</h2>
+          <p className="brand-kicker text-center mb-3">Built for artists</p>
+          <h2 className="text-4xl md:text-5xl font-display font-semibold text-center mb-14">Our Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ServiceCard
               icon={Mic}
               title="Studio Recording"
               description="Premium recording sessions with professional equipment"
-              price="$75/hr"
+              price="Book online"
               features={[
                 "State-of-the-art equipment",
                 "Professional sound engineer",
                 "Real-time monitoring",
                 "High-quality audio export"
               ]}
-              onBook={() => openCheckout("Studio Recording Session", "$75/hr")}
+              onBook={() => setLocation("/studio-booking")}
+              actionLabel="View Booking"
             />
             <ServiceCard
               icon={Headphones}
               title="Mixing Services"
               description="Professional mixing services"
-              price="$350"
+              price="View packages"
               features={[
                 "Professional mixing",
                 "Unlimited revisions",
                 "Fast turnaround",
                 "High-quality stereo mix"
               ]}
-              onBook={() => openCheckout("Mixing Service", "$350")}
+              onBook={() => setLocation("/studio-booking")}
+              actionLabel="View Booking"
             />
             <ServiceCard
               icon={Music}
               title="Sync Licensing"
               description="License our beats for your projects"
-              price="From $50"
               features={[
                 "Exclusive & non-exclusive",
-                "Commercial use rights",
-                "Instant download",
-                "Multiple formats"
+                "Project-specific terms",
+                "Direct licensing support",
+                "Multiple delivery formats"
               ]}
-              onBook={() => openCheckout("Beat License", "From $50")}
+              onBook={() => setLocation("/contact?service=licensing")}
+              actionLabel="Contact Us"
             />
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-card">
+      <section className="brand-panel py-24 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-4">Featured Work</h2>
+          <p className="brand-kicker text-center mb-3">Selected releases</p>
+          <h2 className="text-4xl md:text-5xl font-display font-semibold text-center mb-4">Featured Work</h2>
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             Check out some of our recent mixes and productions
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Video 1 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+            <div className="brand-media aspect-video bg-background rounded-xl overflow-hidden border">
               <iframe
                 width="100%"
                 height="100%"
@@ -122,7 +121,7 @@ export default function Home() {
               ></iframe>
             </div>
             {/* Video 2 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+            <div className="brand-media aspect-video bg-background rounded-xl overflow-hidden border">
               <iframe
                 width="100%"
                 height="100%"
@@ -135,7 +134,7 @@ export default function Home() {
               ></iframe>
             </div>
             {/* Video 3 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+            <div className="brand-media aspect-video bg-background rounded-xl overflow-hidden border">
               <iframe
                 width="100%"
                 height="100%"
@@ -148,7 +147,7 @@ export default function Home() {
               ></iframe>
             </div>
             {/* Video 4 */}
-            <div className="aspect-video bg-background rounded-md overflow-hidden border border-border">
+            <div className="brand-media aspect-video bg-background rounded-xl overflow-hidden border">
               <iframe
                 width="100%"
                 height="100%"
@@ -164,38 +163,39 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 px-4">
+      <section className="brand-section py-24 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-4">Credits</h2>
+          <p className="brand-kicker text-center mb-3">Trusted collaborators</p>
+          <h2 className="text-4xl md:text-5xl font-display font-semibold text-center mb-4">Credits</h2>
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             Trusted by industry legends and rising stars
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Lil Xan</h3>
               <p className="text-sm text-muted-foreground mt-1">Artist</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Death Row Records</h3>
               <p className="text-sm text-muted-foreground mt-1">Label</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Cash Money Records</h3>
               <p className="text-sm text-muted-foreground mt-1">Label</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Thizz Nation</h3>
               <p className="text-sm text-muted-foreground mt-1">Label</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Mistah F.A.B.</h3>
               <p className="text-sm text-muted-foreground mt-1">Artist</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Keyshia Cole</h3>
               <p className="text-sm text-muted-foreground mt-1">Artist</p>
             </div>
-            <div className="text-center p-6 rounded-md bg-card border border-card-border hover-elevate transition-all">
+            <div className="brand-credit text-center p-6 rounded-xl bg-card border transition-all">
               <h3 className="font-display font-semibold text-lg">Eric Bellinger</h3>
               <p className="text-sm text-muted-foreground mt-1">Artist</p>
             </div>
@@ -203,9 +203,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-card">
+      <section className="brand-cta py-24 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">Ready to Create?</h2>
+          <p className="brand-kicker mb-3">Your next record starts here</p>
+          <h2 className="text-4xl md:text-6xl font-display font-semibold mb-6">Ready to Create?</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join hundreds of artists who trust ThaFamilyBeats for their recording needs.
           </p>
@@ -215,12 +216,6 @@ export default function Home() {
         </div>
       </section>
 
-      <CheckoutModal
-        isOpen={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        service={selectedService.name}
-        price={selectedService.price}
-      />
     </div>
   );
 }

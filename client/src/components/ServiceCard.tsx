@@ -6,12 +6,13 @@ interface ServiceCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
-  price: string;
+  price?: string;
   features: string[];
   onBook: () => void;
+  actionLabel?: string;
 }
 
-export default function ServiceCard({ icon: Icon, title, description, price, features, onBook }: ServiceCardProps) {
+export default function ServiceCard({ icon: Icon, title, description, price, features, onBook, actionLabel = "Book Now" }: ServiceCardProps) {
   return (
     <Card className="hover-elevate transition-all duration-300">
       <CardHeader>
@@ -22,9 +23,11 @@ export default function ServiceCard({ icon: Icon, title, description, price, fea
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4">
-          <span className="text-3xl font-mono font-bold">{price}</span>
-        </div>
+        {price && (
+          <div className="mb-4">
+            <span className="text-3xl font-mono font-bold">{price}</span>
+          </div>
+        )}
         <ul className="space-y-2">
           {features.map((feature, index) => (
             <li key={index} className="text-sm text-muted-foreground flex items-start">
@@ -36,7 +39,7 @@ export default function ServiceCard({ icon: Icon, title, description, price, fea
       </CardContent>
       <CardFooter>
         <Button onClick={onBook} className="w-full" data-testid={`button-book-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-          Book Now
+          {actionLabel}
         </Button>
       </CardFooter>
     </Card>
