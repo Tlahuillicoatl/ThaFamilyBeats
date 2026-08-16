@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ArrowRight, AudioLines, Headphones, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import MixReferencePlayer from "@/components/MixReferencePlayer";
 
 type MixReference = {
   title: string;
@@ -11,8 +12,43 @@ type MixReference = {
   afterSrc: string;
 };
 
-// Add paired audio files here as new mix references become available.
-const mixReferences: MixReference[] = [];
+const mixReferences: MixReference[] = [
+  {
+    title: "Broken Pieces",
+    artist: "Amen Okon",
+    genre: "Mixed & mastered by J11",
+    beforeSrc: "/audio/mix-references/broken-pieces-before.mp3",
+    afterSrc: "/audio/mix-references/broken-pieces-after.mp3",
+  },
+  {
+    title: "N The Club",
+    artist: "Amen Okon",
+    genre: "Mixed & mastered by J11",
+    beforeSrc: "/audio/mix-references/n-the-club-before.mp3",
+    afterSrc: "/audio/mix-references/n-the-club-after.mp3",
+  },
+  {
+    title: "Tyron",
+    artist: "Amen Okon",
+    genre: "Mixed & mastered by J11",
+    beforeSrc: "/audio/mix-references/tyron-before.mp3",
+    afterSrc: "/audio/mix-references/tyron-after.mp3",
+  },
+  {
+    title: "Ready",
+    artist: "Amen Okon",
+    genre: "Mixed & mastered by J11",
+    beforeSrc: "/audio/mix-references/ready-before.mp3",
+    afterSrc: "/audio/mix-references/ready-after.mp3",
+  },
+  {
+    title: "Let's Ride",
+    artist: "Amen Okon",
+    genre: "Mixed & mastered by J11",
+    beforeSrc: "/audio/mix-references/lets-ride-before.mp3",
+    afterSrc: "/audio/mix-references/lets-ride-after.mp3",
+  },
+];
 
 export default function ThaFamilyMixes() {
   return (
@@ -26,49 +62,32 @@ export default function ThaFamilyMixes() {
           </p>
         </div>
 
-        {mixReferences.length > 0 ? (
-          <div className="space-y-8 mb-16">
-            {mixReferences.map((reference) => (
-              <Card key={`${reference.artist}-${reference.title}`} className="overflow-hidden">
-                <CardHeader className="border-b border-border/70">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <CardTitle className="font-display text-2xl">{reference.title}</CardTitle>
-                      <CardDescription>{reference.artist}</CardDescription>
-                    </div>
-                    <span className="text-xs uppercase tracking-[0.2em] text-primary">{reference.genre}</span>
+        <div className="mb-8 rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 text-center text-sm text-muted-foreground">
+          Press play, then switch between <span className="font-semibold text-white">Before</span> and <span className="font-semibold text-primary">After</span> at any point to hear the mix transformation.
+        </div>
+
+        <div className="space-y-8 mb-16">
+          {mixReferences.map((reference) => (
+            <Card key={`${reference.artist}-${reference.title}`} className="overflow-hidden">
+              <CardHeader className="border-b border-border/70">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <CardTitle className="font-display text-3xl">{reference.title}</CardTitle>
+                    <CardDescription className="mt-1">{reference.artist}</CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent className="grid gap-6 pt-6 md:grid-cols-2">
-                  <div className="rounded-xl border border-border bg-black/30 p-5">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Before</p>
-                    <audio controls preload="metadata" className="w-full" src={reference.beforeSrc}>
-                      Your browser does not support audio playback.
-                    </audio>
-                  </div>
-                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary">After</p>
-                    <audio controls preload="metadata" className="w-full" src={reference.afterSrc}>
-                      Your browser does not support audio playback.
-                    </audio>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="brand-panel mb-16 overflow-hidden border-primary/20">
-            <CardContent className="flex flex-col items-center px-6 py-16 text-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
-                <AudioLines className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="mb-3 font-display text-3xl font-semibold">Before-and-after audio is coming soon</h2>
-              <p className="max-w-xl text-muted-foreground leading-relaxed">
-                We are preparing matched examples so you can hear exactly how our engineers improve balance, clarity, depth, and impact.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+                  <span className="text-xs uppercase tracking-[0.2em] text-primary">{reference.genre}</span>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <MixReferencePlayer
+                  id={`${reference.artist}-${reference.title}`}
+                  beforeSrc={reference.beforeSrc}
+                  afterSrc={reference.afterSrc}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
         <div className="grid gap-6 mb-16 md:grid-cols-3">
           <Card>
