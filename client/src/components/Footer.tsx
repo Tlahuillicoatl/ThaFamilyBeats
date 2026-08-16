@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { SiInstagram, SiYoutube } from "react-icons/si";
+import { SiInstagram } from "react-icons/si";
 import wordmarkPath from "@assets/thafamilybeats-wordmark.png";
 
 export default function Footer() {
@@ -35,11 +35,8 @@ export default function Footer() {
           <div>
             <h4 className="font-display text-sm font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="https://www.instagram.com/thafamilybeats/" target="_blank" rel="noopener noreferrer" className="brand-social" data-testid="link-instagram">
+              <a href="https://www.instagram.com/thafamilybeatstudios/" target="_blank" rel="noopener noreferrer" className="brand-social" data-testid="link-instagram">
                 <SiInstagram className="h-5 w-5" />
-              </a>
-              <a href="https://www.youtube.com/@thafamilybeats" target="_blank" rel="noopener noreferrer" className="brand-social" data-testid="link-youtube">
-                <SiYoutube className="h-5 w-5" />
               </a>
             </div>
           </div>
