@@ -82,10 +82,10 @@ Partner studio listings and payment destinations are configured in `shared/partn
 
 - Add each approved studio's name, neighborhood, description, `imageUrls`, equipment, amenities, and capacity.
 - Keep the complete street address out of this configuration; it is only released after TFB verifies payment and secures the room.
-- Package prices use cents. For example, `22500` displays as `$225`.
-- Use `bookingMode: "inquiry"` with `packages: null` to hide prices and send visitors to the contact form. Add verified packages and switch to `paid_request` only when the paid flow is ready.
-- Update `partnerBookingConfig.cashApp` or `partnerBookingConfig.zelle` when a verified payment destination changes. Leave Zelle blank to hide it from the form.
-- Every request reuses the existing `bookings` and `transactions` storage and remains pending until manually verified and confirmed by TFB.
+- Package prices use cents, and each listing can expose only the package durations currently available. For example, `22500` displays as `$225`.
+- Use `bookingMode: "inquiry"` with `packages: null` to hide prices and send visitors to the contact form. The current paid listings expose engineer-included packages only.
+- `partnerBookingConfig` controls the Cash App and Zelle destinations, booking call number, and deposit rate. Leave Zelle blank to hide it from the form.
+- A paid request stores the full package total on the booking and the 50% deposit on the transaction. Every request remains pending until TFB verifies payment, receives the customer's call, and confirms the partner studio.
 
 **Development Features:**
 - Vite middleware integration for HMR in development

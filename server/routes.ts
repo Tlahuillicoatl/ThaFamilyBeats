@@ -11,6 +11,7 @@ import {
   insertTransactionSchema,
 } from "@shared/schema";
 import {
+  formatPartnerPrice,
   partnerBookingConfig,
   partnerBookingRequestSchema,
   partnerStudios,
@@ -247,6 +248,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Zelle is not currently available. Please select Cash App." });
       }
 
+      const depositAmount = Math.round(selectedPackage.priceCents * partnerBookingConfig.depositRate);
+      const balanceDue = selectedPackage.priceCents - depositAmount;
+
       const requestedDates = [
         payload.preferredDateTime,
         payload.secondChoiceDateTime,
@@ -257,6 +261,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `Artist name: ${payload.artistName}`,
         `Partner studio: ${studio.name} (${studio.neighborhood})`,
         `Package: ${selectedPackage.label}`,
+        `Package total: ${formatPartnerPrice(selectedPackage.priceCents)}`,
+        `Deposit submitted: ${formatPartnerPrice(depositAmount)}`,
+        `Remaining balance: ${formatPartnerPrice(balanceDue)}`,
         `Preferred date/time: ${payload.preferredDateTime}`,
         `Second choice: ${payload.secondChoiceDateTime}`,
         `Third choice: ${payload.thirdChoiceDateTime}`,
@@ -267,6 +274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `Additional notes: ${payload.additionalNotes || "None"}`,
         `Payment sent under: ${payload.paymentSenderName}`,
         `Payment reference: ${payload.paymentReference}`,
+        `Customer instructed to call: ${partnerBookingConfig.bookingPhoneDisplay}`,
         "Customer accepted pending-confirmation and cancellation terms: Yes",
       ].join("\n");
 
@@ -293,7 +301,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           customerName: payload.legalName,
           customerEmail: payload.email,
           service: `Hollywood Partner Studio - ${studio.name} - ${selectedPackage.label}`,
-          amount: selectedPackage.priceCents,
+          amount: depositAmount,
           paymentMethod: payload.paymentMethod,
           provider: "manual",
           providerRef: payload.paymentReference,
@@ -303,11 +311,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       return res.status(201).json({
         reservationCode: payload.reservationCode,
-        amount: selectedPackage.priceCents,
+        depositAmount,
+        totalAmount: selectedPackage.priceCents,
+        balanceDue,
         studioName: studio.name,
         packageLabel: selectedPackage.label,
         requestedDates,
-        status: "Payment and Studio Confirmation Pending",
+        status: "Deposit and Studio Confirmation Pending",
       });
     } catch (error: any) {
       return res.status(400).json({ message: error.message });

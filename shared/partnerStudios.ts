@@ -27,14 +27,25 @@ export type PartnerStudio = {
   capacity: number | null;
   isExample: boolean;
   bookingMode: "inquiry" | "paid_request";
-  packages: Record<PartnerPackageId, PartnerStudioPackage> | null;
+  packages: Partial<Record<PartnerPackageId, PartnerStudioPackage>> | null;
 };
 
 export const partnerBookingConfig = {
   cashApp: "$J11Studios",
-  // Verified TFB payment destination. Change here if the business Zelle account changes.
-  zelle: "96emmanuelrivera@gmail.com",
+  zelle: "707-534-8263",
+  bookingPhoneDisplay: "+1 213 879-4379",
+  bookingPhoneHref: "tel:+12138794379",
+  depositRate: 0.5,
 } as const;
+
+const engineeredPackage = (hours: 6 | 12, priceCents: number): Partial<Record<PartnerPackageId, PartnerStudioPackage>> => ({
+  [hours === 6 ? "six_with_engineer" : "twelve_with_engineer"]: {
+    label: `${hours} Hours With TFB Engineer`,
+    hours,
+    includesEngineer: true,
+    priceCents,
+  },
+});
 
 export const partnerStudios: PartnerStudio[] = [
   {
@@ -74,9 +85,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 10,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 90000),
   },
   {
     id: "playback-studio-b",
@@ -107,9 +117,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 6,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 70000),
   },
   {
     id: "neighborhood-watche",
@@ -150,9 +159,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 10,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(12, 110000),
   },
   {
     id: "phantom-room",
@@ -186,9 +194,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 8,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 62500),
   },
   {
     id: "playhaus",
@@ -225,9 +232,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 10,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(12, 112500),
   },
   {
     id: "ivy-room",
@@ -266,9 +272,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 6,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(12, 105000),
   },
   {
     id: "ice-box",
@@ -321,9 +326,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 8,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 62500),
   },
   {
     id: "brick-room",
@@ -363,9 +367,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 6,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 60000),
   },
   {
     id: "rose-room",
@@ -404,9 +407,8 @@ export const partnerStudios: PartnerStudio[] = [
     amenities: [],
     capacity: 6,
     isExample: false,
-    bookingMode: "inquiry",
-    // Add verified package prices and switch to "paid_request" to enable paid requests.
-    packages: null,
+    bookingMode: "paid_request",
+    packages: engineeredPackage(6, 57500),
   },
 ];
 
@@ -457,4 +459,9 @@ export const partnerBookingRequestSchema = z.object({
 
 export type PartnerBookingRequest = z.infer<typeof partnerBookingRequestSchema>;
 
-export const formatPartnerPrice = (priceCents: number) => `$${(priceCents / 100).toLocaleString("en-US")}`;
+export const formatPartnerPrice = (priceCents: number) => new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: priceCents % 100 === 0 ? 0 : 2,
+  maximumFractionDigits: 2,
+}).format(priceCents / 100);

@@ -11,6 +11,7 @@ import {
   Clock3,
   ImageIcon,
   MapPin,
+  PhoneCall,
   ShieldCheck,
   Users,
   WalletCards,
@@ -36,7 +37,9 @@ import {
 
 type Confirmation = {
   reservationCode: string;
-  amount: number;
+  depositAmount: number;
+  totalAmount: number;
+  balanceDue: number;
   studioName: string;
   packageLabel: string;
   requestedDates: string[];
@@ -44,6 +47,8 @@ type Confirmation = {
 };
 
 const fieldClass = "mt-1.5";
+
+const getDepositAmount = (priceCents: number) => Math.round(priceCents * partnerBookingConfig.depositRate);
 
 const generateReservationCode = () => {
   let value = Math.floor(Math.random() * 1_000_000);
@@ -223,7 +228,7 @@ export default function PartnerStudios() {
           <p className="brand-kicker mb-3">Independent locations · Coordinated by TFB</p>
           <h1 className="text-4xl md:text-6xl font-display font-semibold mb-5">HOLLYWOOD PARTNER STUDIOS</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Record at select professional Hollywood and Los Angeles studios with booking coordination and optional engineering provided by TFB Studios.
+            Record at select professional Hollywood and Los Angeles studios with booking coordination and engineering provided by TFB Studios.
           </p>
         </div>
 
@@ -283,10 +288,12 @@ export default function PartnerStudios() {
                     <div className="grid gap-3 sm:grid-cols-2">
                       {partnerPackageIds.map((packageId) => {
                         const packageOption = studio.packages![packageId];
+                        if (!packageOption) return null;
                         return (
                           <div key={packageId} className="rounded-xl border border-border bg-black/25 p-4">
                             <p className="text-sm font-medium text-white">{packageOption.label}</p>
                             <p className="mt-2 font-mono text-xl font-semibold text-primary">{formatPartnerPrice(packageOption.priceCents)}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">50% deposit: {formatPartnerPrice(getDepositAmount(packageOption.priceCents))}</p>
                           </div>
                         );
                       })}
@@ -303,7 +310,7 @@ export default function PartnerStudios() {
               <CardFooter>
                 {studio.bookingMode === "paid_request" && studio.packages ? (
                   <Button className="w-full" size="lg" onClick={() => selectStudio(studio.id)}>
-                    Request This Studio
+                    Pay Deposit & Request This Studio
                   </Button>
                 ) : (
                   <Link href={`/contact?service=recording&studio=${encodeURIComponent(studio.name)}`} className="w-full">
@@ -377,6 +384,7 @@ export default function PartnerStudios() {
                       <option value="">Select a package</option>
                       {partnerPackageIds.map((packageId) => {
                         const packageOption = selectedStudio.packages![packageId];
+                        if (!packageOption) return null;
                         return <option key={packageId} value={packageId}>{packageOption.label} — {formatPartnerPrice(packageOption.priceCents)}</option>;
                       })}
                     </select>
@@ -436,7 +444,7 @@ export default function PartnerStudios() {
               <Card className="border-primary/25">
                 <CardHeader>
                   <CardTitle className="font-display text-2xl flex items-center gap-2"><WalletCards className="h-5 w-5 text-primary" />Manual Payment</CardTitle>
-                  <CardDescription>Send the complete selected package amount before submitting this paid reservation request.</CardDescription>
+                  <CardDescription>Send the 50% deposit before submitting this paid reservation request, then call TFB so we can secure the room.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -457,8 +465,9 @@ export default function PartnerStudios() {
 
                   {selectedPackage ? (
                     <div className="rounded-xl border border-primary/30 bg-primary/10 p-5 text-center">
-                      <p className="text-sm text-muted-foreground">Send the complete package amount</p>
-                      <p className="my-2 font-mono text-4xl font-bold text-primary">{formatPartnerPrice(selectedPackage.priceCents)}</p>
+                      <p className="text-sm text-muted-foreground">Send this 50% deposit now</p>
+                      <p className="my-2 font-mono text-4xl font-bold text-primary">{formatPartnerPrice(getDepositAmount(selectedPackage.priceCents))}</p>
+                      <p className="text-sm text-white/75">Package total: {formatPartnerPrice(selectedPackage.priceCents)} · Remaining balance: {formatPartnerPrice(selectedPackage.priceCents - getDepositAmount(selectedPackage.priceCents))}</p>
                       <p className="text-sm text-white">Payment note: <span className="font-mono font-semibold">{form.watch("reservationCode")}</span></p>
                     </div>
                   ) : (
@@ -487,7 +496,7 @@ export default function PartnerStudios() {
                     <div>
                       <h3 className="font-display text-xl font-semibold text-white">Important Customer Notice</h3>
                       <p className="mt-2 text-sm leading-relaxed text-white/75">
-                        Full payment submits a paid reservation request. Your Hollywood studio is not confirmed until TFB Studios verifies your payment, secures the selected location, and sends your final confirmation. If your requested times are unavailable, you may select an alternative room or date or receive a full refund. Once the outside studio has been secured, the disclosed cancellation policy applies.
+                        The 50% deposit submits a paid reservation request. After sending it, you must call TFB Studios at {partnerBookingConfig.bookingPhoneDisplay} so we can verify payment and secure the selected location. Your studio is not confirmed until TFB sends final confirmation. If your requested times are unavailable, you may select an alternative room or date or receive a full deposit refund. Once the outside studio has been secured, the disclosed cancellation policy applies. TFB will provide the remaining balance deadline with final confirmation.
                       </p>
                     </div>
                   </div>
@@ -509,7 +518,7 @@ export default function PartnerStudios() {
               </Card>
 
               <Button type="submit" size="lg" className="w-full" disabled={isSubmitting || !selectedPackage}>
-                {isSubmitting ? "Submitting Paid Reservation Request..." : "Submit Paid Reservation Request"}
+                {isSubmitting ? "Submitting Deposit & Booking Request..." : "Submit Deposit & Booking Request"}
               </Button>
             </form>
           </section>
@@ -530,13 +539,23 @@ export default function PartnerStudios() {
                   <p className="mt-2 font-mono text-3xl font-bold text-primary">{confirmation.reservationCode}</p>
                 </div>
                 <dl className="grid gap-5 sm:grid-cols-2">
-                  <div><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Amount Submitted</dt><dd className="mt-1 font-mono text-xl text-white">{formatPartnerPrice(confirmation.amount)}</dd></div>
+                  <div><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Deposit Submitted</dt><dd className="mt-1 font-mono text-xl text-white">{formatPartnerPrice(confirmation.depositAmount)}</dd></div>
+                  <div><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Package Total</dt><dd className="mt-1 font-mono text-xl text-white">{formatPartnerPrice(confirmation.totalAmount)}</dd></div>
+                  <div><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Remaining Balance</dt><dd className="mt-1 font-mono text-xl text-white">{formatPartnerPrice(confirmation.balanceDue)}</dd></div>
                   <div><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Selected Package</dt><dd className="mt-1 text-white">{confirmation.packageLabel}</dd></div>
                   <div className="sm:col-span-2"><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Requested Dates</dt><dd className="mt-2 space-y-1 text-white">{confirmation.requestedDates.map((date) => <p key={date}>{formatDateTime(date)}</p>)}</dd></div>
                   <div className="sm:col-span-2"><dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Status</dt><dd className="mt-2 inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1.5 text-sm text-amber-200"><ShieldCheck className="h-4 w-4" />{confirmation.status}</dd></div>
                 </dl>
+                <div className="rounded-xl border border-primary/35 bg-primary/10 p-5 text-center">
+                  <p className="font-display text-xl font-semibold text-white">Call TFB now to secure the room</p>
+                  <p className="mt-2 text-sm text-white/75">Have your reservation code and payment reference ready.</p>
+                  <a href={partnerBookingConfig.bookingPhoneHref} className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90">
+                    <PhoneCall className="h-5 w-5" />
+                    Call {partnerBookingConfig.bookingPhoneDisplay}
+                  </a>
+                </div>
                 <p className="rounded-xl border border-border bg-black/25 p-5 text-sm leading-relaxed text-muted-foreground">
-                  TFB will contact you with final availability and location details. No partner studio address is released until payment is verified and the room is secured.
+                  TFB will provide final availability, the remaining balance deadline, and location details after the call. No partner studio address is released until the deposit is verified and the room is secured.
                 </p>
               </CardContent>
             </Card>
