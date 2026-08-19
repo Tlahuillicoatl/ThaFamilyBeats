@@ -10,6 +10,11 @@ import {
   insertContactMessageSchema,
   insertTransactionSchema,
 } from "@shared/schema";
+import {
+  partnerBookingConfig,
+  partnerBookingRequestSchema,
+  partnerStudios,
+} from "@shared/partnerStudios";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import "./types";
 
@@ -218,6 +223,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json({ booking, transaction });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/partner-bookings", async (req, res) => {
+    try {
+      const payload = partnerBookingRequestSchema.parse(req.body);
+      const studio = partnerStudios.find((candidate) => candidate.id === payload.studioId);
+      if (!studio) {
+        return res.status(400).json({ message: "Selected partner studio is unavailable" });
+      }
+
+      if (studio.bookingMode !== "paid_request" || !studio.packages) {
+        return res.status(400).json({ message: "This studio is currently available by inquiry only" });
+      }
+
+      const selectedPackage = studio.packages[payload.packageId];
+      if (!selectedPackage) {
+        return res.status(400).json({ message: "Selected partner studio package is unavailable" });
+      }
+
+      if (payload.paymentMethod === "zelle" && !partnerBookingConfig.zelle) {
+        return res.status(400).json({ message: "Zelle is not currently available. Please select Cash App." });
+      }
+
+      const requestedDates = [
+        payload.preferredDateTime,
+        payload.secondChoiceDateTime,
+        payload.thirdChoiceDateTime,
+      ];
+      const requestNotes = [
+        `Reservation code: ${payload.reservationCode}`,
+        `Artist name: ${payload.artistName}`,
+        `Partner studio: ${studio.name} (${studio.neighborhood})`,
+        `Package: ${selectedPackage.label}`,
+        `Preferred date/time: ${payload.preferredDateTime}`,
+        `Second choice: ${payload.secondChoiceDateTime}`,
+        `Third choice: ${payload.thirdChoiceDateTime}`,
+        `Guests: ${payload.guestCount}`,
+        `Recording type: ${payload.recordingType}`,
+        `Preferred DAW: ${payload.preferredDaw}`,
+        `Equipment requests: ${payload.equipmentRequests || "None"}`,
+        `Additional notes: ${payload.additionalNotes || "None"}`,
+        `Payment sent under: ${payload.paymentSenderName}`,
+        `Payment reference: ${payload.paymentReference}`,
+        "Customer accepted pending-confirmation and cancellation terms: Yes",
+      ].join("\n");
+
+      const booking = await storage.createBooking(
+        insertBookingSchema.parse({
+          customerName: payload.legalName,
+          customerEmail: payload.email,
+          phone: payload.phone,
+          service: `Hollywood Partner Studio - ${studio.name} - ${selectedPackage.label}`,
+          serviceType: "studio_booking",
+          amount: selectedPackage.priceCents,
+          sessionDate: new Date(payload.preferredDateTime),
+          hours: selectedPackage.hours,
+          notes: requestNotes,
+          paymentMethod: payload.paymentMethod,
+          paymentStatus: "pending",
+          status: "pending",
+        }),
+      );
+
+      await storage.createTransaction(
+        insertTransactionSchema.parse({
+          bookingId: booking.id,
+          customerName: payload.legalName,
+          customerEmail: payload.email,
+          service: `Hollywood Partner Studio - ${studio.name} - ${selectedPackage.label}`,
+          amount: selectedPackage.priceCents,
+          paymentMethod: payload.paymentMethod,
+          provider: "manual",
+          providerRef: payload.paymentReference,
+          status: "pending",
+        }),
+      );
+
+      return res.status(201).json({
+        reservationCode: payload.reservationCode,
+        amount: selectedPackage.priceCents,
+        studioName: studio.name,
+        packageLabel: selectedPackage.label,
+        requestedDates,
+        status: "Payment and Studio Confirmation Pending",
+      });
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
     }
   });
 

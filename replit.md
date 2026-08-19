@@ -6,6 +6,7 @@ ThaFamilyBeats is a professional recording studio booking and services platform.
 
 **Core Functionality:**
 - Studio session booking with flexible hourly packages
+- Paid booking requests for independently operated Hollywood partner studios
 - Professional mixing and mastering service packages
 - Beat licensing marketplace with search capabilities
 - Payment processing via multiple methods (Card, PayPal, CashApp, Zelle, Crypto)
@@ -71,8 +72,20 @@ Preferred communication style: Simple, everyday language.
 - `/api/admin/login` - Admin authentication
 - `/api/admin/check` - Session verification
 - `/api/admin/logout` - Session termination
+- `/api/partner-bookings` - Validate and store pending Hollywood partner studio requests
 - `/api/transactions` - Transaction CRUD operations
 - Middleware for request logging and response tracking
+
+### Hollywood Partner Studios Configuration
+
+Partner studio listings and payment destinations are configured in `shared/partnerStudios.ts`.
+
+- Add each approved studio's name, neighborhood, description, `imageUrls`, equipment, amenities, and capacity.
+- Keep the complete street address out of this configuration; it is only released after TFB verifies payment and secures the room.
+- Package prices use cents. For example, `22500` displays as `$225`.
+- Use `bookingMode: "inquiry"` with `packages: null` to hide prices and send visitors to the contact form. Add verified packages and switch to `paid_request` only when the paid flow is ready.
+- Update `partnerBookingConfig.cashApp` or `partnerBookingConfig.zelle` when a verified payment destination changes. Leave Zelle blank to hide it from the form.
+- Every request reuses the existing `bookings` and `transactions` storage and remains pending until manually verified and confirmed by TFB.
 
 **Development Features:**
 - Vite middleware integration for HMR in development

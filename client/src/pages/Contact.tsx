@@ -15,13 +15,19 @@ export default function Contact() {
   const [formData, setFormData] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const beat = params.get("beat");
+    const studio = params.get("studio");
+    const requestedService = params.get("service");
 
     return {
       name: "",
       email: "",
       phone: "",
-      service: params.get("service") === "licensing" ? "licensing" : "",
-      message: beat ? `I'm interested in sync licensing "${beat}" for my project.` : "",
+      service: requestedService === "licensing" || requestedService === "recording" ? requestedService : "",
+      message: studio
+        ? `I'm interested in the ${studio} partner studio. My preferred session dates and project details are:`
+        : beat
+          ? `I'm interested in sync licensing "${beat}" for my project.`
+          : "",
     };
   });
 

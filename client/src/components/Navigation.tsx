@@ -11,6 +11,7 @@ export default function Navigation() {
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/studio-booking", label: "Studio Booking" },
+    { path: "/partner-studios", label: "Partner Studios" },
     { path: "/thafamilymixes", label: "Mix References" },
     { path: "/sync-licensing", label: "Sync Licensing" },
     { path: "/about", label: "About Us" },
@@ -28,7 +29,7 @@ export default function Navigation() {
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path} data-testid={`link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}>
                 <Button
@@ -47,7 +48,7 @@ export default function Navigation() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="button-mobile-menu"
           >
@@ -57,7 +58,7 @@ export default function Navigation() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black/95 border-t border-primary/20 backdrop-blur-xl">
+        <div className="lg:hidden bg-black/95 border-t border-primary/20 backdrop-blur-xl">
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path} onClick={() => setMobileMenuOpen(false)}>

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import StudioBooking from "@/pages/StudioBooking";
+import PartnerStudios from "@/pages/PartnerStudios";
 import ThaFamilyMixes from "@/pages/ThaFamilyMixes";
 import SyncLicensing from "@/pages/SyncLicensing";
 import About from "@/pages/About";
@@ -21,6 +22,9 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/studio-booking">
         <Layout><StudioBooking /></Layout>
+      </Route>
+      <Route path="/partner-studios">
+        <Layout><PartnerStudios /></Layout>
       </Route>
       <Route path="/thafamilymixes">
         <Layout><ThaFamilyMixes /></Layout>

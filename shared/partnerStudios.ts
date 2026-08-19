@@ -1,0 +1,343 @@
+import { z } from "zod";
+
+export const partnerPackageIds = [
+  "six_room_only",
+  "twelve_room_only",
+  "six_with_engineer",
+  "twelve_with_engineer",
+] as const;
+
+export type PartnerPackageId = (typeof partnerPackageIds)[number];
+
+export type PartnerStudioPackage = {
+  label: string;
+  hours: 6 | 12;
+  includesEngineer: boolean;
+  priceCents: number;
+};
+
+export type PartnerStudio = {
+  id: string;
+  name: string;
+  neighborhood: string;
+  description: string;
+  imageUrls: string[];
+  equipment: string[];
+  amenities: string[];
+  capacity: number | null;
+  isExample: boolean;
+  bookingMode: "inquiry" | "paid_request";
+  packages: Record<PartnerPackageId, PartnerStudioPackage> | null;
+};
+
+export const partnerBookingConfig = {
+  cashApp: "$J11Studios",
+  // Verified TFB payment destination. Change here if the business Zelle account changes.
+  zelle: "96emmanuelrivera@gmail.com",
+} as const;
+
+export const partnerStudios: PartnerStudio[] = [
+  {
+    id: "phantom-room",
+    name: "Phantom Room",
+    neighborhood: "North Hollywood",
+    description: "Our newest addition and biggest room provides the same feel as a Rolls-Royce Phantom. Ever wonder what it would be like to create a hit under the stars?",
+    imageUrls: [
+      "/images/partner-studios/phantom-room.jpg",
+      "/images/partner-studios/phantom-room-02.jpg",
+      "/images/partner-studios/phantom-room-03.jpg",
+      "/images/partner-studios/phantom-room-04.jpg",
+      "/images/partner-studios/phantom-room-05.jpg",
+    ],
+    equipment: [
+      "Neumann U87",
+      "Neve 1073lb (500 series)",
+      "Tube-Tech CL 1B",
+      "Universal Audio Apollo x8p Thunderbolt 3",
+      "McDSP Everything Pack",
+      "Soundtoys 5.3",
+      "Melodyne Editor",
+      "Waves SSL Bundle",
+      "Valhalla Vintage FX",
+      "Synchro Arts VocAlign",
+      "FabFilter Pro Bundle",
+      "Waves Mercury Bundle",
+      "Antares Auto-Tune Bundle",
+      "Plugin Alliance Mega Bundle",
+      "Pro Tools 2019",
+    ],
+    amenities: [],
+    capacity: 8,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+  {
+    id: "playhaus",
+    name: "PLAYHAUS.",
+    neighborhood: "North Hollywood",
+    description: "This room converts into any color you desire to set the vibe you're feeling for the day. With a booth that sits on a platform, you get the feeling of being on a stage while recording. If you're looking for a spacious and comfortable environment to get creative, look no further.",
+    imageUrls: [
+      "/images/partner-studios/playhaus.jpg",
+      "/images/partner-studios/playhaus-02.jpg",
+      "/images/partner-studios/playhaus-03.jpg",
+      "/images/partner-studios/playhaus-04.jpg",
+    ],
+    equipment: [
+      "Neve 1073",
+      "Tube Tech CL1B",
+      "Sony C-800G",
+      "Apollo x6 Heritage Edition (TB3)",
+      "McDSP Everything Pack",
+      "Soundtoyz 5.3",
+      "Melodyne Editor",
+      "Waves SSL Bundle",
+      "Valhalla Vintage FX",
+      "Fabfilter Pro Bundle",
+      "Waves Mercury Bundle",
+      "Antares Autotune Bundle",
+      "Protools 2020",
+      "Logic Pro X",
+      "Avantone Pro CLA-10A",
+      "Ocean Way Audio HR3.5",
+      "2 Ocean Way Audio 18-inch Subwoofers",
+      "Little Red Cue Box",
+      "SSL2+ USB Audio Interface",
+    ],
+    amenities: [],
+    capacity: 10,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+  {
+    id: "ivy-room",
+    name: "Ivy Room",
+    neighborhood: "North Hollywood",
+    description: "LA's finest sanctuary to make your next hit. Home to the Ivy Room and future Iris Room, this boutique, nature-inspired studio pairs pro-grade gear with an impeccable creative atmosphere.",
+    imageUrls: [
+      "/images/partner-studios/ivy-room.jpg",
+      "/images/partner-studios/ivy-room-02.jpg",
+      "/images/partner-studios/ivy-room-03.jpg",
+    ],
+    equipment: [
+      "Neve 1073",
+      "Tube Tech CL1B",
+      "Neumann U87",
+      "Universal Audio Apollo 8x",
+      "API 512C Preamp",
+      "Neve 511 Preamp",
+      "Elias 27 EQ",
+      "WA76",
+      "Waves Complete",
+      "Plugin Alliance Mega Bundle",
+      "IK Multimedia T-RackS",
+      "Soothe 2",
+      "The God Particle",
+      "Select FabFilter (Pro-Q3, Pro-L2, Pro-C2)",
+      "Antares Ultimate",
+      "Valhalla DSP",
+      "UAD DSP",
+      "Pro Tools Studio",
+      "Logic Pro",
+      "Evo Twin 6.5-inch Monitors (Pair)",
+      "Avantone MixCubes (Pair)",
+      "Adam's 15.5-inch Subwoofer",
+    ],
+    amenities: [],
+    capacity: 6,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+  {
+    id: "ice-box",
+    name: "Ice Box",
+    neighborhood: "Los Angeles",
+    description: "An all-white studio inside a two-studio suite with a spacious lounge and comfortable seating, suited for recording sessions and writing camps.",
+    imageUrls: [
+      "/images/partner-studios/ice-box.jpg",
+      "/images/partner-studios/ice-box-02.jpg",
+      "/images/partner-studios/ice-box-03.jpg",
+      "/images/partner-studios/ice-box-04.jpg",
+    ],
+    equipment: [
+      "Neumann U-87 Ai Condenser Microphone",
+      "Universal Audio 1176LN Solid-State Limiting Amplifier",
+      "Neve 1073SPX Microphone Preamp & EQ",
+      "Apollo Twin USB Interface",
+      "AKG C414-XLS Microphone (Upon Request)",
+      "Neumann TLM 103 (Upon Request)",
+      "Pro Tools 2019",
+      "Logic X",
+      "PreSonus Monitor Station V2",
+      "Yamaha HS8 Studio Monitors",
+      "Yamaha HS5 Studio Monitors",
+      "JBL Professional LSR310S Subwoofer",
+      "Auto-Tune Pro",
+      "D16 Group Bundle",
+      "FabFilter",
+      "Manipulator",
+      "iZotope Ozone 9 Bundle",
+      "NI Guitar Rig",
+      "Plugin Alliance Bundle",
+      "Soundtoyz Bundle",
+      "Sugar Bytes Bundle",
+      "Valhalla Reverb Bundle",
+      "Waves Mercury Bundle",
+      "Reaktor",
+      "Kickstart",
+      "LFO Tool",
+      "Melodyne",
+      "FabFilter Pro Bundle",
+      "Ohm Force Package",
+      "Cableguys HalfTime",
+      "Sinevibes Bundle",
+      "Mac Mini - 3.2 GHz 6-Core Intel Core i7 with 64 GB RAM",
+      "Squier Fender Electric Bass",
+      "Audio-Technica ATH-M50 Headphones",
+      "Native Instruments Komplete Kontrol S49 MK2 Keyboard",
+    ],
+    amenities: [],
+    capacity: 8,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+  {
+    id: "brick-room",
+    name: "Brick Room",
+    neighborhood: "North Hollywood",
+    description: "Our flagship room has loft-city vibes. Comfortable, acoustically sound, and spacious enough for a group of fellow hitmakers to gear up and record.",
+    imageUrls: [
+      "/images/partner-studios/brick-room.jpg",
+      "/images/partner-studios/brick-room-02.jpg",
+      "/images/partner-studios/brick-room-03.jpg",
+      "/images/partner-studios/brick-room-04.jpg",
+      "/images/partner-studios/brick-room-05.jpg",
+    ],
+    equipment: [
+      "Neumann U87",
+      "Neve 1073lb (500 series)",
+      "Tube Tech CL1B",
+      "Universal Audio Apollo x8p Thunderbolt 3",
+      "McDSP Everything Pack",
+      "Soundtoyz 5.3",
+      "Melodyne Editor",
+      "Waves SSL Bundle",
+      "Valhalla Vintage FX",
+      "Synchro Arts VocAlign",
+      "FabFilter Pro Bundle",
+      "Waves Mercury Bundle",
+      "Antares Auto-Tune Bundle",
+      "Plugin Alliance Mega Bundle",
+      "Pro Tools 2019",
+      "JBL 306P MKII Powered Monitors",
+      "JBL 308P MKII Powered Studio Monitors",
+      "Dangerous Music D-Box Monitor Controller",
+      "Mac Pro 2013 - 3.5 GHz, 64 GB RAM, 1 TB SSD",
+      "Electric Guitar",
+      "MIDI Keyboard with Stand",
+    ],
+    amenities: [],
+    capacity: 6,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+  {
+    id: "rose-room",
+    name: "Rose Room",
+    neighborhood: "Los Angeles",
+    description: "An elegant studio with a large rose-themed vocal booth and glass separating the control room. Well suited for mixing and intimate sessions, with a cigar-lounge feel and access to a spacious lounge area.",
+    imageUrls: [
+      "/images/partner-studios/rose-room.jpg",
+      "/images/partner-studios/rose-room-02.jpg",
+      "/images/partner-studios/rose-room-03.jpg",
+    ],
+    equipment: [
+      "AKG C414-XLS Microphone",
+      "Focusrite Scarlett 8Pre USB Audio Interface",
+      "Antares Auto-Tune Pro Bundle",
+      "Blue Cat Audio",
+      "D16 Distortions",
+      "FabFilter",
+      "NI Guitar Rig",
+      "Sugar Bytes Bundle",
+      "VocAlign Pro",
+      "Valhalla Reverb Bundle",
+      "Waves Mercury Bundle",
+      "Pro Tools 2020",
+      "Logic X",
+      "PreSonus Monitor Station V2",
+      "Yamaha HS8 Studio Monitors",
+      "JBL Professional LSR310S Subwoofer",
+      "27-inch iMac (Late 2013) - 3.2 GHz Intel Core i5, 32 GB DDR3",
+      "Fender Acoustic Guitar",
+      "Shure SM7B Microphone",
+      "Shure SRH840 Headphones",
+      "Sony MDR-7506 Headphones",
+      "Behringer U-Control UMX610 61-Key Keyboard",
+    ],
+    amenities: [],
+    capacity: 6,
+    isExample: false,
+    bookingMode: "inquiry",
+    // Add verified package prices and switch to "paid_request" to enable paid requests.
+    packages: null,
+  },
+];
+
+const futureDateTime = z.string().trim().min(1, "Choose a date and starting time").refine(
+  (value) => {
+    const timestamp = new Date(value).getTime();
+    return Number.isFinite(timestamp) && timestamp > Date.now();
+  },
+  "Choose a future date and starting time",
+);
+
+export const partnerBookingRequestSchema = z.object({
+  reservationCode: z.string().regex(/^TFB-HW-\d{6}$/, "Invalid reservation code"),
+  legalName: z.string().trim().min(2, "Enter your legal name").max(120),
+  artistName: z.string().trim().min(2, "Enter your artist name").max(120),
+  email: z.string().trim().email("Enter a valid email address").max(200),
+  phone: z.string().trim().min(7, "Enter a valid phone number").max(30),
+  studioId: z.string().trim().min(1, "Select a studio"),
+  packageId: z.preprocess(
+    (value) => value === "" || value === null ? undefined : value,
+    z.enum(partnerPackageIds, { required_error: "Select a package" }),
+  ),
+  preferredDateTime: futureDateTime,
+  secondChoiceDateTime: futureDateTime,
+  thirdChoiceDateTime: futureDateTime,
+  guestCount: z.coerce.number().int().min(1, "Enter at least one guest").max(30, "Contact us for groups over 30"),
+  recordingType: z.string().trim().min(2, "Describe the type of recording").max(160),
+  preferredDaw: z.string().trim().min(2, "Enter your preferred DAW").max(100),
+  equipmentRequests: z.string().trim().max(1000),
+  additionalNotes: z.string().trim().max(1500),
+  paymentMethod: z.preprocess(
+    (value) => value === "" || value === null ? undefined : value,
+    z.enum(["cashapp", "zelle"], { required_error: "Select a payment method" }),
+  ),
+  paymentSenderName: z.string().trim().min(2, "Enter the name used for payment").max(120),
+  paymentReference: z.string().trim().min(3, "Enter the payment reference number").max(160),
+  acceptedTerms: z.boolean().refine((accepted) => accepted, "You must accept the pending-confirmation and cancellation terms"),
+}).superRefine((request, context) => {
+  const requestedDates = [request.preferredDateTime, request.secondChoiceDateTime, request.thirdChoiceDateTime];
+  if (new Set(requestedDates).size !== requestedDates.length) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Choose three different date and time options",
+      path: ["secondChoiceDateTime"],
+    });
+  }
+});
+
+export type PartnerBookingRequest = z.infer<typeof partnerBookingRequestSchema>;
+
+export const formatPartnerPrice = (priceCents: number) => `$${(priceCents / 100).toLocaleString("en-US")}`;

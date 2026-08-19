@@ -1,5 +1,7 @@
 import { useEffect } from "react";
-import { ExternalLink } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowRight, Building2, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const bookingUrl = "https://go.flobooking.com/booking/tfbstudios/st/nnoxbOprhiGZCvu30okB?heightMode=fixed&showHeader=true";
 
@@ -20,7 +22,7 @@ export default function StudioBooking() {
     <div className="min-h-screen py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <p className="brand-kicker mb-3">TFB Studios</p>
+          <p className="brand-kicker mb-3">Owned Long Beach location</p>
           <h1 className="text-4xl md:text-6xl font-display font-semibold mb-5">Book Your Session</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Choose your studio or mixing service, select an available time, and complete your booking securely through FloBooking.
@@ -52,6 +54,21 @@ export default function StudioBooking() {
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
         </p>
+
+        <section className="brand-cta mt-16 rounded-2xl border border-primary/25 px-6 py-10 text-center md:px-12">
+          <Building2 className="mx-auto mb-4 h-9 w-9 text-primary" />
+          <p className="brand-kicker mb-3">Need a Hollywood location?</p>
+          <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4">Explore Partner Studios</h2>
+          <p className="mx-auto mb-7 max-w-2xl text-muted-foreground leading-relaxed">
+            Request independently operated Hollywood rooms coordinated by TFB, with room-only and TFB-engineer package options.
+          </p>
+          <Link href="/partner-studios">
+            <Button size="lg" className="gap-2">
+              View Hollywood Partner Studios
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </section>
       </div>
     </div>
   );

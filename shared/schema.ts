@@ -73,7 +73,7 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   sessionDate: z.coerce.date().optional().nullable(),
   hours: z.number().int().min(1).max(12).optional().nullable(),
   phone: z.string().trim().min(7).max(30).optional().nullable(),
-  notes: z.string().trim().max(1500).optional().nullable(),
+  notes: z.string().trim().max(8000).optional().nullable(),
 });
 
 export type InsertBooking = z.infer<typeof insertBookingSchema>;

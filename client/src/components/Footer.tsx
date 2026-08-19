@@ -18,6 +18,7 @@ export default function Footer() {
             <h4 className="font-display text-sm font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/studio-booking" className="hover:text-foreground transition-colors" data-testid="footer-link-studio">Studio Booking</Link></li>
+              <li><Link href="/partner-studios" className="hover:text-foreground transition-colors" data-testid="footer-link-partner-studios">Hollywood Partner Studios</Link></li>
               <li><Link href="/thafamilymixes" className="hover:text-foreground transition-colors" data-testid="footer-link-mixing">Mix References</Link></li>
               <li><Link href="/sync-licensing" className="hover:text-foreground transition-colors" data-testid="footer-link-licensing">Sync Licensing</Link></li>
             </ul>
